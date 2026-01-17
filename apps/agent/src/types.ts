@@ -85,11 +85,28 @@ export const PatternAnalysisSchema = z.object({
 
 export type PatternAnalysis = z.infer<typeof PatternAnalysisSchema>
 
+// Workout log schema
+export const WorkoutLogSchema = z.object({
+  workout_id: z.string().uuid(),
+  user_id: z.string(),
+  exercise_type: z.string(),
+  duration_minutes: z.number().positive(),
+  reps: z.number().optional(),
+  sets: z.number().optional(),
+  form_quality: z.enum(['excellent', 'good', 'fair', 'needs_improvement']).optional(),
+  notes: z.string().optional(),
+  timestamp: z.string().datetime(),
+  verified: z.boolean().default(true),
+})
+
+export type WorkoutLog = z.infer<typeof WorkoutLogSchema>
+
 // Database schema
 export const DatabaseSchema = z.object({
   messages: z.array(MessageWithMetadataSchema).default([]),
   userProfiles: z.array(UserProfileSchema).default([]),
   interventions: z.array(InterventionSchema).default([]),
+  workoutLogs: z.array(WorkoutLogSchema).default([]),
 })
 
 export type Database = z.infer<typeof DatabaseSchema>

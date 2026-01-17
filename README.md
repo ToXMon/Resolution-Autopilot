@@ -144,6 +144,12 @@ bun run index.ts "Analyze my workout patterns for the last week"
 
 # Request intervention
 bun run index.ts "I keep missing my morning workouts. Help me stay on track."
+
+# Log a completed workout
+bun run index.ts "I just finished 30 squats in 3 sets with good form"
+
+# Check workout history
+bun run index.ts "Show me my workout history for the past week"
 ```
 
 ## 🛠️ Available Tools
@@ -156,6 +162,18 @@ The agent has access to these tools:
 4. **send_nudge** - Send motivational messages
 5. **fetch_smart_contract** - Check blockchain stake status
 6. **log_to_opic** - Log decisions for evaluation
+7. **log_workout** - Log completed workouts with exercise details (NEW)
+8. **get_workout_history** - Retrieve verified workout logs and progress (NEW)
+
+### Vision-Based Workout Logging
+
+The system now includes **vision agent integration** for reliable workout tracking:
+
+- **Verified Workout Logs**: Replace unreliable calendar-based tracking with actual workout logs
+- **Form Quality Tracking**: Record exercise form quality (excellent, good, fair, needs_improvement)
+- **Smart Contract Verification**: Logged workouts satisfy commitment contract requirements
+- **Real-time Coaching**: Integration-ready with vision-based form coaching (inspired by [gym_buddy](https://github.com/Tabintel/gym_buddy))
+- **Progress Analytics**: Track exercise types, duration, reps, sets, and improvement over time
 
 ## 📁 Project Structure
 
@@ -252,6 +270,8 @@ All agent decisions are logged to `./logs/opic.json` for evaluation:
 - [x] OPIC evaluation dashboard
 - [x] User dashboard with metrics
 - [x] Landing page with navigation
+- [x] Vision-based workout logging system
+- [x] Workout history and progress tracking
 
 ### Phase 3: Testing & Polish (Next)
 - [ ] End-to-end integration testing
@@ -289,6 +309,7 @@ MIT
 - Ryan Carson for the PRD → Spec → Tasks → TDD methodology
 - Encode Hackathon for the opportunity
 - Venice AI and Google for privacy-focused LLM solutions
+- [gym_buddy](https://github.com/Tabintel/gym_buddy) for vision agent workout tracking inspiration
 
 ---
 
