@@ -1,4 +1,4 @@
-import type { ToolDefinition, ToolFn } from '../types.js'
+import type { ToolDefinition, ToolFn, WorkoutLog } from '../types.js'
 import { getDatabase, saveDatabase } from '../memory.js'
 import { v4 as uuidv4 } from 'uuid'
 
@@ -51,19 +51,6 @@ export interface LogWorkoutInput {
   notes?: string
 }
 
-interface WorkoutLog {
-  workout_id: string
-  user_id: string
-  exercise_type: string
-  duration_minutes: number
-  reps?: number
-  sets?: number
-  form_quality?: 'excellent' | 'good' | 'fair' | 'needs_improvement'
-  notes?: string
-  timestamp: string
-  verified: boolean
-}
-
 export const logWorkout: ToolFn<LogWorkoutInput, string> = async (input) => {
   const {
     user_id,
@@ -109,14 +96,14 @@ export const logWorkout: ToolFn<LogWorkoutInput, string> = async (input) => {
   await saveDatabase(db)
 
   // Calculate workout stats for this user
-  const userWorkouts = db.workoutLogs.filter((w: WorkoutLog) => w.user_id === user_id)
+  const userWorkouts = db.workoutLogs.filter(w => w.user_id === user_id)
   const totalWorkouts = userWorkouts.length
-  const totalMinutes = userWorkouts.reduce((sum: number, w: WorkoutLog) => sum + w.duration_minutes, 0)
+  const totalMinutes = userWorkouts.reduce((sum, w) => sum + w.duration_minutes, 0)
   const recentWorkouts = userWorkouts.slice(-7) // Last 7 workouts
   
   // Check if this satisfies commitment contract requirements
   const today = new Date().toISOString().split('T')[0]
-  const workoutsToday = userWorkouts.filter((w: WorkoutLog) => 
+  const workoutsToday = userWorkouts.filter(w => 
     w.timestamp.startsWith(today)
   ).length
 
@@ -188,13 +175,13 @@ export const getWorkoutHistory: ToolFn<GetWorkoutHistoryInput, string> = async (
   const cutoffDate = new Date()
   cutoffDate.setDate(cutoffDate.getDate() - days_back)
 
-  const workouts = db.workoutLogs.filter((w: WorkoutLog) => 
+  const workouts = db.workoutLogs.filter(w => 
     w.user_id === user_id && new Date(w.timestamp) >= cutoffDate
   )
 
   // Calculate statistics
   const totalWorkouts = workouts.length
-  const totalMinutes = workouts.reduce((sum: number, w: WorkoutLog) => sum + w.duration_minutes, 0)
+  const totalMinutes = workouts.reduce((sum, w) => sum + w.duration_minutes, 0)
   
   // Expected workouts (assume 4x per week schedule)
   const expectedWorkouts = Math.ceil((days_back / 7) * 4)
@@ -204,7 +191,7 @@ export const getWorkoutHistory: ToolFn<GetWorkoutHistoryInput, string> = async (
 
   // Group by exercise type
   const exerciseBreakdown: Record<string, number> = {}
-  workouts.forEach((w: WorkoutLog) => {
+  workouts.forEach(w => {
     exerciseBreakdown[w.exercise_type] = (exerciseBreakdown[w.exercise_type] || 0) + 1
   })
 
@@ -214,7 +201,7 @@ export const getWorkoutHistory: ToolFn<GetWorkoutHistoryInput, string> = async (
 
   const result = {
     success: true,
-    workouts: workouts.map((w: WorkoutLog) => ({
+    workouts: workouts.map(w => ({
       date: new Date(w.timestamp).toISOString().split('T')[0],
       time: new Date(w.timestamp).toLocaleTimeString('en-US', { 
         hour: '2-digit', 
