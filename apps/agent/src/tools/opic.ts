@@ -26,7 +26,7 @@ export const logToOPICToolDefinition: ToolDefinition = {
   },
 }
 
-interface LogToOPICInput {
+export interface LogToOPICInput {
   event_name: string
   metrics: Record<string, any>
   reasoning_chain?: string

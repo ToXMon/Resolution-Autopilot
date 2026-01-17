@@ -95,6 +95,8 @@ Resolution Autopilot is an **AI agent system** that prevents resolution failure 
 │  │    • send_nudge (message delivery)      │   │
 │  │    • fetch_smart_contract (blockchain) │   │
 │  │    • log_to_opic (observability)        │   │
+│  │    • log_workout (vision-verified logs) │   │
+│  │    • get_workout_history (progress)     │   │
 │  └──────────────────┬──────────────────────┘   │
 │                     │                          │
 │  ┌──────────────────▼──────────────────────┐   │
@@ -263,6 +265,174 @@ Action:
 - User sees their commitment in real money
 - Judges see full-stack Web3 integration
 
+### 3.5. Vision Agent Workout Interface (Week 3-4)
+
+**The Problem with Calendar Tracking:**
+- Calendar integration can't verify actual gym attendance
+- Users schedule workouts but don't complete them
+- No way to verify exercise quality or form
+- Smart contract milestone verification becomes unreliable
+
+**The Solution: Vision-Based Workout Verification**
+
+Real-time vision agent that watches workouts, provides coaching, and verifies completion. Inspired by the gym_buddy architecture, integrated with Resolution Autopilot's agent loop.
+
+**What It Does:**
+- **Real-time Video Processing**: Uses webcam/phone camera to watch user workout
+- **Pose Detection**: YOLO11 tracks body position and movement patterns
+- **Form Coaching**: LLM (Venice AI or Gemini vision models) provides real-time feedback
+- **Rep Counting**: Automatically counts reps/sets with accuracy
+- **Workout Verification**: Logs verified workout completion for smart contract milestones
+- **Progress Tracking**: Stores exercise details, form quality, and performance metrics
+
+**Architecture:**
+
+```
+┌──────────────────────────────────────────────────────┐
+│           Vision Agent Workout Interface             │
+├──────────────────────────────────────────────────────┤
+│                                                      │
+│  1. VIDEO CAPTURE                                    │
+│     - User's webcam/phone camera                    │
+│     - 3 FPS streaming to agent                      │
+│     - GetStream for video transport                 │
+│                                                      │
+│  2. POSE DETECTION                                   │
+│     - YOLO11n-pose (ultralytics)                    │
+│     - 17 keypoint body tracking                     │
+│     - Real-time position analysis                   │
+│                                                      │
+│  3. VISION LLM PROCESSING                            │
+│     - Venice AI Llama 3.3 70B Vision OR             │
+│     - Google Gemini 2.0 Flash with vision           │
+│     - Processes video + pose data                   │
+│     - Provides form feedback                        │
+│                                                      │
+│  4. COACHING FEEDBACK                                │
+│     - Voice/text feedback on form                   │
+│     - Rep counting announcements                    │
+│     - Correction suggestions                        │
+│     - Encouragement and motivation                  │
+│                                                      │
+│  5. WORKOUT LOGGING                                  │
+│     - Verified completion stored in DB              │
+│     - Exercise type, duration, reps, sets           │
+│     - Form quality assessment                       │
+│     - Satisfies smart contract requirements         │
+│                                                      │
+└──────────────────────────────────────────────────────┘
+```
+
+**Supported Vision LLMs:**
+
+| Model | Provider | Capabilities | FPS | Cost |
+|-------|----------|-------------|-----|------|
+| **Llama 3.3 70B Vision** | Venice AI | Real-time vision, privacy-focused, low latency | 3 | Low |
+| **Gemini 2.0 Flash** | Google | Multimodal real-time, high accuracy | 3 | Medium |
+| **GPT-4o Realtime** | OpenAI | Vision + voice, best reasoning (fallback) | 3 | High |
+
+**Tools Used:**
+- `log_workout(exercise_type, duration, reps, sets, form_quality, notes)` - Records verified workout
+- `get_workout_history(user_id, days_back)` - Retrieves workout logs with analytics
+- `start_vision_session(user_id, exercise_type)` - Initiates video coaching session
+- `end_vision_session(session_id)` - Completes session and logs workout
+
+**Integration with Main Agent:**
+
+```typescript
+// User starts workout session
+User: "I'm about to do squats, can you coach me?"
+
+[Main Agent Reasoning]
+Thought: User wants vision coaching. Start vision agent session.
+
+Action:
+1. start_vision_session(user_id='demo_user_001', exercise_type='squats')
+   → Returns session_id and video call link
+
+2. Vision agent joins call, watches workout
+   → Provides real-time feedback: "Good depth, keep chest up"
+   → Counts reps: "1... 2... 3..."
+   → Detects form issues: "Push through your heels"
+
+3. Session ends after 15 minutes, 3 sets of 15 reps completed
+
+4. log_workout(
+     user_id='demo_user_001',
+     exercise_type='squats',
+     duration_minutes=15,
+     reps=45,
+     sets=3,
+     form_quality='good',
+     notes='Maintained good form throughout, slight knee valgus on final set'
+   )
+
+5. Update smart contract: milestone progress +1 workout
+```
+
+**User Experience:**
+
+1. **Pre-Workout**: User tells agent they're ready to workout
+2. **Video Call**: Agent opens video interface (browser or mobile)
+3. **Live Coaching**: Vision agent watches, counts reps, corrects form
+4. **Post-Workout**: Automatic logging with verified completion
+5. **Progress Update**: Agent shows stats and commitment status
+
+**Technical Implementation:**
+
+```typescript
+// Vision agent initialization (inspired by gym_buddy)
+async function createVisionAgent(userId: string, exerciseType: string) {
+  const agent = new VisionAgent({
+    edge: new GetStreamEdge(),  // Video transport
+    llm: new VeniceAIVision({   // Or GeminiVision()
+      model: 'llama-3.3-70b-vision',
+      fps: 3,
+      instructions: await loadCoachingGuide(exerciseType)
+    }),
+    processors: [
+      new YOLOPoseProcessor({
+        model: 'yolo11n-pose.pt',
+        confidence: 0.5
+      })
+    ],
+    onWorkoutComplete: async (data) => {
+      await logWorkout({
+        user_id: userId,
+        exercise_type: exerciseType,
+        ...data
+      })
+    }
+  })
+  
+  return agent
+}
+```
+
+**Coaching Instructions:**
+
+The vision agent uses detailed coaching guides for each exercise:
+- **Squats**: Stance, depth, knee alignment, spinal position
+- **Push-ups**: Hand placement, body position, range of motion
+- **Lunges**: Knee position, torso alignment, balance
+- **Plank**: Core engagement, body alignment, breathing
+- **Deadlifts**: Hip hinge, back position, bar path
+
+**Why This Matters:**
+- **Reliable Verification**: Replaces unreliable calendar tracking
+- **Real Value**: Provides actual coaching, not just tracking
+- **Smart Contract Ready**: Verified workouts satisfy milestone requirements
+- **User Engagement**: Interactive experience keeps users committed
+- **Injury Prevention**: Form feedback reduces injury risk
+- **Privacy-Focused**: Venice AI option keeps data off big tech platforms
+
+**Success Metrics:**
+- Workout completion verification rate: 100% (vs ~60% with calendar)
+- Form quality improvement over time
+- User satisfaction with coaching feedback
+- Smart contract milestone achievement rate
+- Reduced injury/dropout rates
+
 ### 4. Evaluation Dashboard (OPIC Integration) (Week 4)
 
 **What It Tracks:**
@@ -296,10 +466,12 @@ Action:
 | Layer | Technology | Why |
 |-------|-----------|-----|
 | **Agent Loop** | Custom TypeScript (like Scott Morris repo) | Full control, no black boxes |
-| **LLM** | GPT-4o (OpenAI) | Best reasoning, tool use, cost-effective |
+| **LLM (Text)** | Venice AI (Llama 3.3 70B) + Gemini | Privacy-focused, powerful reasoning |
+| **LLM (Vision)** | Venice AI Vision + Gemini 2.0 Flash | Real-time video processing for workout coaching |
 | **Frontend** | Next.js 15 App Router | Fast shipping, deployment to Vercel |
 | **Backend** | Node.js/Express + custom agent | Minimal dependencies, easy deployment |
-| **Database** | PostgreSQL (Supabase) | Structured data, reliability |
+| **Database** | LowDB (JSON) + PostgreSQL (Supabase) | Simple storage + structured data |
+| **Video Processing** | GetStream + YOLO11n-pose | Real-time video transport + pose detection |
 | **Messaging** | Twilio for SMS/push | Multi-channel nudges |
 | **Blockchain** | Solidity on Base L2 | Low gas fees, fast finality |
 | **Observability** | OPIC SDK + custom logger | Judge-grade evaluation pipeline |
@@ -310,18 +482,24 @@ Action:
 ```
 src/
 ├── agent.ts              # Main agent loop (like Scott Morris)
-├── llm.ts                # GPT-4o + tool definitions (Zod schemas)
+├── llm.ts                # Venice AI / Gemini + tool definitions (Zod schemas)
 ├── tools/
 │   ├── calendar.ts       # Google Calendar API
 │   ├── patterns.ts       # Pattern detection logic
 │   ├── intervention.ts   # Deploy interventions
 │   ├── blockchain.ts     # Smart contract read/write
 │   ├── nudge.ts          # SMS/push notifications
+│   ├── workout.ts        # Workout logging (vision-verified)
 │   └── opic.ts           # OPIC logging
+├── vision/
+│   ├── agent.ts          # Vision agent (gym_buddy-inspired)
+│   ├── pose.ts           # YOLO11 pose detection
+│   ├── coaching.ts       # Exercise-specific coaching guides
+│   └── session.ts        # Video session management
 ├── memory.ts             # Conversation history (JSON-based like Scott Morris)
 ├── types.ts              # Zod schemas for type safety
 ├── systemPrompt.ts       # LLM system message
-└── db.ts                 # Database layer (Supabase)
+└── db.ts                 # Database layer (LowDB + Supabase)
 ```
 
 ### Deployment Architecture

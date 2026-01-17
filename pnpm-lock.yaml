@@ -105,7 +105,7 @@ importers:
         version: 4.0.4(hardhat@3.1.4)
       '@nomicfoundation/hardhat-toolbox':
         specifier: ^6.1.0
-        version: 6.1.0(5e123cc54d9773565e105c4649a542ee)
+        version: 6.1.0(471a7bbb1c1f24155020188d2ebaa2ba)
       '@openzeppelin/contracts':
         specifier: ^5.4.0
         version: 5.4.0
@@ -4656,7 +4656,7 @@ snapshots:
       ethereumjs-util: 7.1.5
       hardhat: 3.1.4
 
-  '@nomicfoundation/hardhat-toolbox@6.1.0(5e123cc54d9773565e105c4649a542ee)':
+  '@nomicfoundation/hardhat-toolbox@6.1.0(471a7bbb1c1f24155020188d2ebaa2ba)':
     dependencies:
       '@nomicfoundation/hardhat-chai-matchers': 2.1.0(@nomicfoundation/hardhat-ethers@4.0.4(hardhat@3.1.4))(chai@6.2.2)(ethers@6.16.0)(hardhat@3.1.4)
       '@nomicfoundation/hardhat-ethers': 4.0.4(hardhat@3.1.4)
@@ -4667,13 +4667,13 @@ snapshots:
       '@typechain/hardhat': 9.1.0(@typechain/ethers-v6@0.5.1(ethers@6.16.0)(typechain@8.3.2(typescript@5.9.3))(typescript@5.9.3))(ethers@6.16.0)(hardhat@3.1.4)(typechain@8.3.2(typescript@5.9.3))
       '@types/chai': 5.2.3
       '@types/mocha': 10.0.10
-      '@types/node': 20.19.30
+      '@types/node': 22.7.5
       chai: 6.2.2
       ethers: 6.16.0
       hardhat: 3.1.4
       hardhat-gas-reporter: 2.3.0(hardhat@3.1.4)(typescript@5.9.3)(zod@3.25.76)
       solidity-coverage: 0.8.17(hardhat@3.1.4)
-      ts-node: 10.9.2(@types/node@20.19.30)(typescript@5.9.3)
+      ts-node: 10.9.2(@types/node@22.7.5)(typescript@5.9.3)
       typechain: 8.3.2(typescript@5.9.3)
       typescript: 5.9.3
 
@@ -7892,14 +7892,14 @@ snapshots:
     dependencies:
       typescript: 5.9.3
 
-  ts-node@10.9.2(@types/node@20.19.30)(typescript@5.9.3):
+  ts-node@10.9.2(@types/node@22.7.5)(typescript@5.9.3):
     dependencies:
       '@cspotcode/source-map-support': 0.8.1
       '@tsconfig/node10': 1.0.12
       '@tsconfig/node12': 1.0.11
       '@tsconfig/node14': 1.0.3
       '@tsconfig/node16': 1.0.4
-      '@types/node': 20.19.30
+      '@types/node': 22.7.5
       acorn: 8.15.0
       acorn-walk: 8.3.4
       arg: 4.1.3

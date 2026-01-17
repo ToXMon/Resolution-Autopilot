@@ -31,22 +31,25 @@ This document provides an iterative, week-by-week task breakdown for building th
 - [x] Monorepo setup with pnpm workspaces
 - [x] TypeScript configuration
 - [x] Core agent loop (Scott Morris pattern)
-- [x] All 6 tools implemented (calendar, patterns, intervention, nudge, blockchain, OPIC)
+- [x] All 8 tools implemented (calendar, patterns, intervention, nudge, blockchain, OPIC, workout logging, workout history)
 - [x] Memory management with LowDB
 - [x] System prompt with agent instructions
 - [x] Console UI with colored output
 - [x] Comprehensive documentation
+- [x] Vision agent integration for workout logging
+- [x] Workout verification system for smart contracts
 
 ### 🔄 IN PROGRESS: Week 2 Testing & Iteration
 - [ ] Install dependencies and test locally
-- [ ] Validate tool execution
+- [ ] Validate tool execution (including new workout tools)
 - [ ] Write unit tests
 - [ ] Iterate on agent responses
 
 ### 📅 UPCOMING: Weeks 3-4
-- [ ] Frontend application
-- [ ] Smart contracts
+- [ ] Frontend application with workout logging UI
+- [ ] Smart contracts with verified workout milestones
 - [ ] OPIC dashboard
+- [ ] Vision agent real-time integration (Phase 2)
 - [ ] Deployment
 
 ---
@@ -290,13 +293,14 @@ This document provides an iterative, week-by-week task breakdown for building th
 #### Priority 2: Write Contracts
 - [ ] **Task 6.3**: CommitmentContract.sol
   - Escrow for user stakes
-  - Milestone verification
+  - Milestone verification based on workout logs
   - Success/failure logic
   - Charity distribution
 
 - [ ] **Task 6.4**: MilestoneVerifier.sol
   - Off-chain proof verification
   - Agent signature validation
+  - Workout log verification
   - Milestone completion tracking
 
 - [ ] **Task 6.5**: Write contract tests
@@ -304,21 +308,89 @@ This document provides an iterative, week-by-week task breakdown for building th
   npx hardhat test
   ```
 
+- [ ] **Task 6.6**: Integrate workout logs with smart contracts
+  - Connect log_workout to milestone tracking
+  - Verify workout completion for payments
+  - Test milestone verification with workout data
+
 #### Priority 3: Deploy & Integrate
-- [ ] **Task 6.6**: Deploy to testnet
+- [ ] **Task 6.7**: Deploy to testnet
   ```bash
   npx hardhat run scripts/deploy.ts --network baseSepolia
   ```
 
-- [ ] **Task 6.7**: Verify on Etherscan
+- [ ] **Task 6.8**: Verify on Etherscan
   ```bash
   npx hardhat verify --network baseSepolia DEPLOYED_ADDRESS
   ```
 
-- [ ] **Task 6.8**: Update blockchain tool with real contract
+- [ ] **Task 6.9**: Update blockchain tool with real contract
   - Replace mock data
   - Use ethers.js
   - Test read/write operations
+  - Connect workout logs to contract verification
+
+### Phase 6.5: Vision Agent Workout Logging (Days 17-18) ✅
+
+#### Priority 1: Core Logging System ✅
+- [x] **Task 6.5.1**: Create log_workout tool
+  - Record exercise type, duration, reps, sets
+  - Track form quality
+  - Store in database with verification status
+  - Calculate user statistics
+
+- [x] **Task 6.5.2**: Create get_workout_history tool
+  - Retrieve workout logs by date range
+  - Calculate completion rates
+  - Analyze commitment status
+  - Group by exercise type
+
+- [x] **Task 6.5.3**: Update database schema
+  - Add WorkoutLog type
+  - Include in DatabaseSchema
+  - Support all workout fields
+
+- [x] **Task 6.5.4**: Integrate with agent system
+  - Add tools to tool definitions
+  - Export from tools/index.ts
+  - Update system prompt with workout logging instructions
+
+#### Priority 2: Documentation ✅
+- [x] **Task 6.5.5**: Create VISION_AGENT_INTEGRATION.md
+  - Document architecture and data model
+  - Provide usage examples
+  - Explain smart contract integration
+  - Outline future enhancement roadmap
+
+- [x] **Task 6.5.6**: Update README.md
+  - Add workout logging to tool list
+  - Include example interactions
+  - Update roadmap with vision agent features
+  - Add gym_buddy acknowledgment
+
+- [x] **Task 6.5.7**: Update TASK_LIST.md
+  - Reflect completed vision agent tasks
+  - Update smart contract integration tasks
+  - Add future vision processing tasks
+
+#### Priority 3: Future Enhancements (Phase 2)
+- [ ] **Task 6.5.8**: Real-time vision processing setup
+  - Install Python dependencies (vision-agents, YOLO)
+  - Configure video stream infrastructure
+  - Set up pose detection pipeline
+  - Test with sample workout videos
+
+- [ ] **Task 6.5.9**: Automatic workout detection
+  - Implement exercise recognition from video
+  - Add automatic rep/set counting
+  - Calculate form quality from pose data
+  - Auto-log workouts after session ends
+
+- [ ] **Task 6.5.10**: Real-time coaching integration
+  - Voice feedback during exercises
+  - Form correction suggestions
+  - Progress tracking visualization
+  - Integration with web UI
 
 ### Phase 7: OPIC Dashboard (Days 18-19)
 

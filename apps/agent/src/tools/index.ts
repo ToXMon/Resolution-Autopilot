@@ -5,6 +5,7 @@ import { bookIntervention, bookInterventionToolDefinition } from './intervention
 import { sendNudge, sendNudgeToolDefinition } from './nudge.js'
 import { fetchSmartContract, fetchSmartContractToolDefinition } from './blockchain.js'
 import { logToOPIC, logToOPICToolDefinition } from './opic.js'
+import { logWorkout, logWorkoutToolDefinition, getWorkoutHistory, getWorkoutHistoryToolDefinition } from './workout.js'
 
 // Export all tool definitions
 export const toolDefinitions: ToolDefinition[] = [
@@ -14,6 +15,8 @@ export const toolDefinitions: ToolDefinition[] = [
   sendNudgeToolDefinition,
   fetchSmartContractToolDefinition,
   logToOPICToolDefinition,
+  logWorkoutToolDefinition,
+  getWorkoutHistoryToolDefinition,
 ]
 
 // Export all tool functions
@@ -24,6 +27,8 @@ export const tools = {
   send_nudge: sendNudge,
   fetch_smart_contract: fetchSmartContract,
   log_to_opic: logToOPIC,
+  log_workout: logWorkout,
+  get_workout_history: getWorkoutHistory,
 }
 
 export {
@@ -33,4 +38,6 @@ export {
   sendNudge,
   fetchSmartContract,
   logToOPIC,
+  logWorkout,
+  getWorkoutHistory,
 }

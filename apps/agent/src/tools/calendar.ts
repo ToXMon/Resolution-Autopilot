@@ -20,7 +20,7 @@ export const analyzeCalendarToolDefinition: ToolDefinition = {
   },
 }
 
-interface AnalyzeCalendarInput {
+export interface AnalyzeCalendarInput {
   days_back?: number
   user_id: string
 }

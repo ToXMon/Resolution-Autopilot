@@ -26,7 +26,7 @@ export const bookInterventionToolDefinition: ToolDefinition = {
   },
 }
 
-interface BookInterventionInput {
+export interface BookInterventionInput {
   user_id: string
   type: 'calendar' | 'message' | 'financial' | 'social'
   details: Record<string, any>

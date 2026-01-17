@@ -229,7 +229,189 @@ Color: Green for complete, amber for in-progress, gray for future
 Link: Etherscan (show transaction hash)
 ```
 
-### 5. OPIC Evaluation Dashboard
+### 5. Vision Agent Workout Interface
+
+**Purpose**: Real-time workout coaching with video, pose detection, and form feedback
+
+**Design Prompt**:
+
+```
+Design a split-screen workout interface showing video + coaching:
+
+┌──────────────────────────────────────────────────────┐
+│ 🎥 Live Workout Coaching                             │
+├──────────────────────────────────────────────────────┤
+│                                                      │
+│  ┌─────────────────────┐  ┌──────────────────────┐ │
+│  │                     │  │ Current Exercise:    │ │
+│  │   VIDEO FEED        │  │ SQUATS              │ │
+│  │   [User webcam]     │  │                      │ │
+│  │                     │  │ Set: 1 of 3          │ │
+│  │   with YOLO pose    │  │ Reps: 8 / 12        │ │
+│  │   skeleton overlay  │  │                      │ │
+│  │                     │  │ ┌────────────────┐  │ │
+│  │                     │  │ │ FORM: GOOD ✓   │  │ │
+│  │                     │  │ └────────────────┘  │ │
+│  └─────────────────────┘  │                      │ │
+│                           │ Coach Says:          │ │
+│  Duration: 03:42          │ "Great depth!        │ │
+│  ▶️ [Recording]           │  Keep chest up."     │ │
+│                           │                      │ │
+│                           │ [🎤 Voice Feedback]  │ │
+│                           └──────────────────────┘ │
+│                                                      │
+│  ┌──────────────────────────────────────────────┐  │
+│  │ Form Tips:                                    │  │
+│  │ • Knees tracking over toes ✓                 │  │
+│  │ • Depth below parallel ✓                     │  │
+│  │ • Core engaged ⚠️ (tighten slightly)        │  │
+│  └──────────────────────────────────────────────┘  │
+│                                                      │
+│  [Pause Session] [End Workout & Save]               │
+└──────────────────────────────────────────────────────┘
+
+Layout:
+- Left 60%: Video feed with pose skeleton overlay
+- Right 40%: Real-time stats, form feedback, coaching messages
+- Bottom: Form checklist with live status updates
+- YOLO pose: 17 keypoints shown as dots + lines
+- Form status: Green ✓ (good), Amber ⚠️ (needs attention), Red ✗ (poor)
+
+Colors:
+- Video background: Slate-900
+- Pose skeleton: Cyan-500 (bright overlay)
+- Form good: Emerald-500
+- Form warning: Amber-500
+- Form poor: Red-500
+- Coaching text: Slate-100
+
+Animations:
+- Rep counter: Pulse on increment
+- Form status: Smooth color transitions
+- Coaching messages: Fade in from bottom
+- Pose skeleton: Fluid line drawing
+```
+
+### 6. Vision Agent Pre-Workout Setup
+
+**Purpose**: Configure workout session before starting
+
+**Design Prompt**:
+
+```
+Design a pre-workout configuration screen:
+
+┌──────────────────────────────────────────────────────┐
+│ 🏋️ Start Workout Session                             │
+├──────────────────────────────────────────────────────┤
+│                                                      │
+│  Select Exercise Type:                               │
+│  ┌────────┐ ┌────────┐ ┌────────┐ ┌────────┐      │
+│  │ SQUATS │ │ PUSH-  │ │ LUNGES │ │ PLANK  │      │
+│  │   🧍   │ │  UPS   │ │   🚶   │ │   🤸   │      │
+│  │ [●]    │ │ [ ]    │ │ [ ]    │ │ [ ]    │      │
+│  └────────┘ └────────┘ └────────┘ └────────┘      │
+│                                                      │
+│  Workout Plan:                                       │
+│  ┌──────────────────────────────────────────┐      │
+│  │ Target: 3 sets × 12 reps                 │      │
+│  │ Rest between sets: 60 seconds            │      │
+│  │ Form coaching: Enabled ✓                 │      │
+│  │ Rep counting: Automatic ✓                │      │
+│  └──────────────────────────────────────────┘      │
+│                                                      │
+│  Vision Model:                                       │
+│  ○ Venice AI (Llama 3.3 70B Vision) - Privacy       │
+│  ● Gemini 2.0 Flash - Recommended                   │
+│  ○ GPT-4o Realtime - Fallback                       │
+│                                                      │
+│  Camera Check:                                       │
+│  ┌──────────────────────────────────────────┐      │
+│  │ [Video preview showing user]              │      │
+│  │                                            │      │
+│  │ ✓ Camera detected                         │      │
+│  │ ✓ Good lighting                           │      │
+│  │ ✓ Full body visible                       │      │
+│  └──────────────────────────────────────────┘      │
+│                                                      │
+│  [Cancel] [Start Coaching Session]                  │
+└──────────────────────────────────────────────────────┘
+
+Features:
+- Exercise selection with icons (visual, clear)
+- Workout parameters (sets, reps, rest)
+- Vision model selection (privacy options)
+- Camera preview with checks (lighting, framing)
+- Clear CTA to start
+
+Colors:
+- Selected exercise: Indigo-500 border
+- Camera preview: Slate-800 background
+- Status checks: Emerald-500 (good)
+- CTA button: Indigo-500, large
+```
+
+### 7. Vision Agent Post-Workout Summary
+
+**Purpose**: Show workout completion and log verified data
+
+**Design Prompt**:
+
+```
+Design a post-workout summary screen:
+
+┌──────────────────────────────────────────────────────┐
+│ 🎉 Workout Complete!                                 │
+├──────────────────────────────────────────────────────┤
+│                                                      │
+│  ┌────────────────────────────────────────┐         │
+│  │ SQUATS - 15:42 duration                │         │
+│  │                                         │         │
+│  │ ✓ 3 sets completed                     │         │
+│  │ ✓ 45 total reps (15 + 15 + 15)        │         │
+│  │ ✓ Form quality: GOOD                   │         │
+│  │                                         │         │
+│  │ Personal Record: No (best: 50 reps)    │         │
+│  └────────────────────────────────────────┘         │
+│                                                      │
+│  Form Feedback:                                      │
+│  ┌────────────────────────────────────────┐         │
+│  │ Strengths:                              │         │
+│  │ • Excellent depth throughout            │         │
+│  │ • Good knee tracking                    │         │
+│  │ • Consistent tempo                      │         │
+│  │                                         │         │
+│  │ Areas to improve:                       │         │
+│  │ • Tighten core on descent               │         │
+│  │ • Push through heels more               │         │
+│  └────────────────────────────────────────┘         │
+│                                                      │
+│  Smart Contract Update:                              │
+│  ┌────────────────────────────────────────┐         │
+│  │ ✓ Workout logged and verified           │         │
+│  │ ✓ Milestone progress: 3/4 this week     │         │
+│  │ ✓ On track for $20 bonus!               │         │
+│  └────────────────────────────────────────┘         │
+│                                                      │
+│  [Share Progress] [View History] [Done]              │
+└──────────────────────────────────────────────────────┘
+
+Features:
+- Clear workout summary (sets, reps, duration)
+- Detailed form feedback (strengths + improvements)
+- Smart contract status update
+- Personal record tracking
+- Social sharing option
+
+Colors:
+- Success background: Subtle emerald gradient
+- Feedback sections: Slate-800 cards
+- Strengths: Emerald-500 bullets
+- Improvements: Amber-500 bullets
+- Contract update: Indigo-500 accent
+```
+
+### 8. OPIC Evaluation Dashboard
 
 **Purpose**: Show system transparency to judges
 
@@ -404,7 +586,124 @@ Also on dashboard: Floating menu (top-right)
 - [Evaluate (OPIC)]
 ```
 
-### Screen 5: Success Celebration
+### Screen 5: Vision Agent Workout Flow (Mobile)
+
+**Design Prompt**:
+
+```
+Design mobile workout interface with real-time coaching:
+
+SCREEN 5A: Pre-Workout Setup
+┌────────────────────────┐
+│ 🏋️ Start Workout       │
+│                        │
+│ Choose Exercise:       │
+│ [SQUATS] selected      │
+│                        │
+│ 📷 Camera Setup:       │
+│ ┌──────────────────┐  │
+│ │ [Video preview]   │  │
+│ │                   │  │
+│ │ ✓ Full body seen  │  │
+│ └──────────────────┘  │
+│                        │
+│ Target: 3×12 reps      │
+│                        │
+│ [Start Coaching]       │
+│ (large button)         │
+└────────────────────────┘
+
+SCREEN 5B: Live Workout (Portrait)
+┌────────────────────────┐
+│ ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀ │  Top status bar
+│ SQUATS | 08:32         │
+│ ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄ │
+│                        │
+│ ┌──────────────────┐  │
+│ │                   │  │
+│ │   VIDEO FEED      │  │  60% of screen
+│ │   with pose       │  │
+│ │   skeleton        │  │
+│ │                   │  │
+│ └──────────────────┘  │
+│                        │
+│ ┌─ FORM: GOOD ✓ ──┐  │
+│                        │
+│ SET 2 OF 3             │
+│ REPS: 10/12            │
+│ ▓▓▓▓▓▓▓▓▓▓░░ 83%      │  Progress bar
+│                        │
+│ 💬 Coach says:         │
+│ "Good depth! Two more!" │
+│                        │
+│ [⏸ Pause] [🔴 End]    │  Buttons always visible
+└────────────────────────┘
+
+SCREEN 5C: Rest Between Sets
+┌────────────────────────┐
+│ ⏱️ REST TIME           │
+│                        │
+│ ┌──────────────────┐  │
+│ │       45          │  │  Large countdown
+│ │    seconds        │  │
+│ └──────────────────┘  │
+│                        │
+│ Set 2 complete! ✓      │
+│ 15 reps - Great form   │
+│                        │
+│ Next: Set 3 (final)    │
+│                        │
+│ [Skip Rest] [Continue] │
+└────────────────────────┘
+
+SCREEN 5D: Workout Complete
+┌────────────────────────┐
+│ 🎉 WORKOUT COMPLETE!   │
+│                        │
+│ SQUATS                 │
+│ 45 reps in 15:42      │
+│                        │
+│ ✓ 3 sets completed     │
+│ ✓ Form: GOOD           │
+│ ✓ New streak day!      │
+│                        │
+│ Milestone Progress:    │
+│ ▓▓▓▓▓▓▓▓░░░░ 3/4      │
+│                        │
+│ [View Details]         │
+│ [Done]                 │
+└────────────────────────┘
+
+Mobile-specific features:
+- Portrait mode optimized
+- Large touch targets (48px min)
+- Haptic feedback on rep counts
+- Voice coaching (speaker icon to toggle)
+- Auto-pause if phone moves away
+- Low-power mode (reduces FPS)
+- Offline rep counting (sync later)
+
+Gestures:
+- Tap anywhere: Show/hide controls
+- Swipe up: Show workout history
+- Swipe down: End workout (confirm)
+- Double tap: Quick pause/resume
+
+Colors (Dark Mode):
+- Background: Slate-900
+- Video area: Black
+- Form status: Emerald-500/Amber-500/Red-500
+- Progress bar: Indigo-500
+- Text: Slate-100
+
+Animations:
+- Rep count: Pulse + haptic on increment
+- Form status: Smooth color fade
+- Rest timer: Circular progress animation
+- Completion: Confetti + scale up
+```
+
+### Screen 6: Success Celebration
 
 **Design Prompt**:
 
