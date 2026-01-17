@@ -41,7 +41,7 @@ export const logWorkoutToolDefinition: ToolDefinition = {
   },
 }
 
-interface LogWorkoutInput {
+export interface LogWorkoutInput {
   user_id: string
   exercise_type: string
   duration_minutes: number
@@ -161,7 +161,7 @@ export const getWorkoutHistoryToolDefinition: ToolDefinition = {
   },
 }
 
-interface GetWorkoutHistoryInput {
+export interface GetWorkoutHistoryInput {
   user_id: string
   days_back?: number
 }

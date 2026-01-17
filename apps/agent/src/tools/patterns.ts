@@ -20,7 +20,7 @@ export const detectPatternsToolDefinition: ToolDefinition = {
   },
 }
 
-interface DetectPatternsInput {
+export interface DetectPatternsInput {
   user_id: string
   calendar_data?: string
 }

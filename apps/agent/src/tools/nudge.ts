@@ -31,7 +31,7 @@ export const sendNudgeToolDefinition: ToolDefinition = {
   },
 }
 
-interface SendNudgeInput {
+export interface SendNudgeInput {
   user_id: string
   message: string
   channel: 'sms' | 'push' | 'email'

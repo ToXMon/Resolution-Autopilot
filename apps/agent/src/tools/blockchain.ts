@@ -15,7 +15,7 @@ export const fetchSmartContractToolDefinition: ToolDefinition = {
   },
 }
 
-interface FetchSmartContractInput {
+export interface FetchSmartContractInput {
   user_id: string
 }
 

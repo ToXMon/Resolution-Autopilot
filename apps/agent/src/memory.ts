@@ -22,6 +22,7 @@ export const getDb = async (): Promise<Low<Database>> => {
     messages: [],
     userProfiles: [],
     interventions: [],
+    workoutLogs: [],
   })
 
   await db.read()
@@ -161,4 +162,16 @@ export const initializeDemoData = async (): Promise<void> => {
   await database.write()
 
   console.log('✅ Demo data initialized')
+}
+
+// Export database access functions for tools
+export const getDatabase = async (): Promise<Database> => {
+  const database = await getDb()
+  return database.data
+}
+
+export const saveDatabase = async (data: Database): Promise<void> => {
+  const database = await getDb()
+  database.data = data
+  await database.write()
 }

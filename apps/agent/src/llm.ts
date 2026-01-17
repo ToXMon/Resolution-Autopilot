@@ -93,7 +93,7 @@ async function runVeniceLLM(
     throw new Error(`Venice AI API error: ${response.status} - ${error}`)
   }
 
-  const data = await response.json()
+  const data = await response.json() as any
   const choice = data.choices[0]
   const message = choice.message
 
@@ -209,7 +209,7 @@ async function runGeminiLLM(
     throw new Error(`Gemini API error: ${response.status} - ${error}`)
   }
 
-  const data = await response.json()
+  const data = await response.json() as any
   const candidate = data.candidates[0]
   const content = candidate.content
 
