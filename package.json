@@ -1,0 +1,30 @@
+{
+  "name": "resolution-autopilot",
+  "version": "1.0.0",
+  "description": "AI agent system for resolution completion using behavioral pattern detection",
+  "private": true,
+  "scripts": {
+    "dev": "pnpm --filter=agent dev & pnpm --filter=web dev",
+    "build": "pnpm --filter=agent build && pnpm --filter=web build",
+    "test": "pnpm -r test",
+    "lint": "pnpm -r lint",
+    "clean": "pnpm -r clean"
+  },
+  "keywords": [
+    "ai-agent",
+    "resolution",
+    "behavioral-change",
+    "hackathon",
+    "encode"
+  ],
+  "author": "",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0",
+    "pnpm": ">=8.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.6",
+    "typescript": "^5.3.3"
+  }
+}
