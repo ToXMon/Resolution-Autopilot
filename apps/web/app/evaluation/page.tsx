@@ -1,138 +1,330 @@
+'use client';
+
 export default function EvaluationPage() {
+  const metrics = [
+    { label: 'Intervention Precision', value: '87%', change: '↑ 5%', color: '#10B981' },
+    { label: 'User Retention', value: '78%', subtext: 'Week 1', color: '#6366F1' },
+    { label: 'Reasoning Quality', value: '9.2', subtext: '/10 LLM-as-judge', color: '#8B5CF6' },
+    { label: 'False Positive Rate', value: '8%', change: '↓ 3%', color: '#F59E0B' }
+  ];
+
+  const interventions = [
+    { type: 'Social Accountability', value: 73, color: '#10B981' },
+    { type: 'Calendar Booking', value: 68, color: '#6366F1' },
+    { type: 'Financial Reminder', value: 61, color: '#8B5CF6' },
+    { type: 'Generic Notification', value: 12, color: '#EF4444' }
+  ];
+
+  const traces = [
+    {
+      time: '2025-01-17 09:45:23',
+      type: 'DRIFT DETECTED',
+      risk: 'MEDIUM',
+      riskColor: '#F59E0B',
+      confidence: 72,
+      signals: 'Missed 2 consecutive workouts',
+      reasoning: 'User history shows pattern of skipping after 2 misses. Deploy social intervention.',
+      action: 'Sent SMS to accountability buddy ✓',
+      actionColor: '#10B981'
+    },
+    {
+      time: '2025-01-16 18:30:15',
+      type: 'PATTERN ANALYSIS',
+      risk: 'LOW',
+      riskColor: '#10B981',
+      rate: '67%',
+      trend: 'Stable',
+      reasoning: 'User on track with 2/4 workouts this week. No intervention needed.',
+      action: 'Continue monitoring',
+      actionColor: '#64748B'
+    },
+    {
+      time: '2025-01-15 22:10:42',
+      type: 'INTERVENTION DEPLOYED',
+      risk: 'HIGH',
+      riskColor: '#EF4444',
+      confidence: 89,
+      signals: '3 consecutive misses + no future bookings',
+      reasoning: 'Critical decision point. Financial stake reminder most effective for this user.',
+      action: 'Sent financial reminder SMS • User completed next workout ✓',
+      actionColor: '#10B981'
+    }
+  ];
+
   return (
-    <div className="min-h-screen bg-gray-950 text-white p-8">
-      <div className="max-w-7xl mx-auto">
-        <h1 className="text-4xl font-bold mb-2">OPIC Evaluation Dashboard</h1>
-        <p className="text-gray-400 mb-8">Transparent agent performance metrics and reasoning chains</p>
-        
+    <div className="min-h-screen" style={{ backgroundColor: '#0F172A' }}>
+      <div className="max-w-7xl mx-auto px-6 py-8">
+        <div className="mb-8">
+          <h1 style={{
+            fontFamily: "'Space Grotesk', sans-serif",
+            fontSize: '32px',
+            fontWeight: 700,
+            color: '#F1F5F9',
+            marginBottom: '8px'
+          }}>
+            OPIC Evaluation Dashboard
+          </h1>
+          <p style={{ color: '#64748B', fontSize: '14px' }}>
+            Transparent agent performance metrics and reasoning chains
+          </p>
+        </div>
+
         {/* Key Metrics */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-          <div className="bg-gradient-to-br from-green-900 to-green-950 rounded-lg p-6 border border-green-800">
-            <p className="text-sm text-gray-300 mb-2">Intervention Precision</p>
-            <p className="text-4xl font-bold text-green-400">87%</p>
-            <p className="text-xs text-gray-400 mt-2">↑ 5% from last week</p>
-          </div>
-
-          <div className="bg-gradient-to-br from-blue-900 to-blue-950 rounded-lg p-6 border border-blue-800">
-            <p className="text-sm text-gray-300 mb-2">User Retention</p>
-            <p className="text-4xl font-bold text-blue-400">78%</p>
-            <p className="text-xs text-gray-400 mt-2">Week 1 retention rate</p>
-          </div>
-
-          <div className="bg-gradient-to-br from-purple-900 to-purple-950 rounded-lg p-6 border border-purple-800">
-            <p className="text-sm text-gray-300 mb-2">Reasoning Quality</p>
-            <p className="text-4xl font-bold text-purple-400">9.2</p>
-            <p className="text-xs text-gray-400 mt-2">LLM-as-judge score /10</p>
-          </div>
-
-          <div className="bg-gradient-to-br from-orange-900 to-orange-950 rounded-lg p-6 border border-orange-800">
-            <p className="text-sm text-gray-300 mb-2">False Positive Rate</p>
-            <p className="text-4xl font-bold text-orange-400">8%</p>
-            <p className="text-xs text-gray-400 mt-2">↓ 3% from last week</p>
-          </div>
+          {metrics.map((metric, i) => (
+            <div
+              key={i}
+              style={{
+                background: `linear-gradient(135deg, ${metric.color}15 0%, ${metric.color}05 100%)`,
+                border: `1px solid ${metric.color}40`,
+                borderRadius: '16px',
+                padding: '24px',
+                transition: 'all 0.2s'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.transform = 'translateY(-4px)';
+                e.currentTarget.style.borderColor = metric.color;
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.transform = 'translateY(0)';
+                e.currentTarget.style.borderColor = `${metric.color}40`;
+              }}
+            >
+              <div style={{
+                color: '#94A3B8',
+                fontSize: '12px',
+                marginBottom: '12px',
+                fontWeight: 500,
+                textTransform: 'uppercase',
+                letterSpacing: '0.5px'
+              }}>
+                {metric.label}
+              </div>
+              <div style={{
+                fontFamily: "'Space Grotesk', sans-serif",
+                fontSize: '40px',
+                fontWeight: 700,
+                color: metric.color,
+                marginBottom: '8px'
+              }}>
+                {metric.value}
+              </div>
+              <div style={{ color: '#64748B', fontSize: '12px' }}>
+                {metric.change || metric.subtext}
+              </div>
+            </div>
+          ))}
         </div>
 
         {/* Intervention Effectiveness */}
-        <div className="bg-gray-900 rounded-lg p-6 border border-gray-800 mb-8">
-          <h2 className="text-2xl font-semibold mb-4">Intervention Effectiveness by Type</h2>
-          <div className="space-y-4">
-            <div>
-              <div className="flex justify-between mb-2">
-                <span className="text-sm">Social Accountability</span>
-                <span className="text-sm font-semibold text-green-400">73%</span>
+        <div style={{
+          background: 'rgba(30, 41, 59, 0.5)',
+          border: '1px solid rgba(100, 116, 139, 0.2)',
+          borderRadius: '16px',
+          padding: '32px',
+          marginBottom: '24px'
+        }}>
+          <h2 style={{
+            fontFamily: "'Space Grotesk', sans-serif",
+            fontSize: '20px',
+            fontWeight: 700,
+            color: '#F1F5F9',
+            marginBottom: '24px'
+          }}>
+            Intervention Effectiveness by Type
+          </h2>
+
+          <div className="space-y-5">
+            {interventions.map((item, i) => (
+              <div key={i}>
+                <div style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  marginBottom: '8px',
+                  alignItems: 'center'
+                }}>
+                  <span style={{ color: '#CBD5E1', fontSize: '14px', fontWeight: 500 }}>
+                    {item.type}
+                  </span>
+                  <span style={{
+                    color: item.color,
+                    fontSize: '16px',
+                    fontWeight: 700,
+                    fontFamily: "'Space Grotesk', sans-serif"
+                  }}>
+                    {item.value}%
+                  </span>
+                </div>
+                <div style={{
+                  height: '10px',
+                  background: 'rgba(15, 23, 42, 0.5)',
+                  borderRadius: '5px',
+                  overflow: 'hidden'
+                }}>
+                  <div
+                    style={{
+                      width: `${item.value}%`,
+                      height: '100%',
+                      background: item.color,
+                      borderRadius: '5px',
+                      transition: 'width 1s ease-out'
+                    }}
+                  />
+                </div>
               </div>
-              <div className="w-full bg-gray-800 rounded-full h-3">
-                <div className="bg-green-400 h-3 rounded-full" style={{ width: '73%' }}></div>
-              </div>
-            </div>
-            <div>
-              <div className="flex justify-between mb-2">
-                <span className="text-sm">Calendar Booking</span>
-                <span className="text-sm font-semibold text-blue-400">68%</span>
-              </div>
-              <div className="w-full bg-gray-800 rounded-full h-3">
-                <div className="bg-blue-400 h-3 rounded-full" style={{ width: '68%' }}></div>
-              </div>
-            </div>
-            <div>
-              <div className="flex justify-between mb-2">
-                <span className="text-sm">Financial Reminder</span>
-                <span className="text-sm font-semibold text-purple-400">61%</span>
-              </div>
-              <div className="w-full bg-gray-800 rounded-full h-3">
-                <div className="bg-purple-400 h-3 rounded-full" style={{ width: '61%' }}></div>
-              </div>
-            </div>
-            <div>
-              <div className="flex justify-between mb-2">
-                <span className="text-sm">Generic Notification</span>
-                <span className="text-sm font-semibold text-red-400">12%</span>
-              </div>
-              <div className="w-full bg-gray-800 rounded-full h-3">
-                <div className="bg-red-400 h-3 rounded-full" style={{ width: '12%' }}></div>
-              </div>
-            </div>
+            ))}
           </div>
         </div>
 
         {/* Agent Trace Logs */}
-        <div className="bg-gray-900 rounded-lg p-6 border border-gray-800 mb-8">
-          <h2 className="text-2xl font-semibold mb-4">Recent Agent Trace Logs</h2>
+        <div style={{
+          background: 'rgba(30, 41, 59, 0.5)',
+          border: '1px solid rgba(100, 116, 139, 0.2)',
+          borderRadius: '16px',
+          padding: '32px',
+          marginBottom: '24px'
+        }}>
+          <h2 style={{
+            fontFamily: "'Space Grotesk', sans-serif",
+            fontSize: '20px',
+            fontWeight: 700,
+            color: '#F1F5F9',
+            marginBottom: '24px'
+          }}>
+            Recent Agent Trace Logs
+          </h2>
+
           <div className="space-y-4">
-            <div className="bg-gray-950 p-4 rounded border border-gray-800">
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-xs text-gray-400">2025-01-17 09:45:23</span>
-                <span className="px-2 py-1 bg-yellow-900 text-yellow-300 rounded text-xs">MEDIUM RISK</span>
-              </div>
-              <p className="font-mono text-sm text-blue-400 mb-2">[DRIFT DETECTED]</p>
-              <p className="text-sm text-gray-300 mb-2">Confidence: 72% • Signals: Missed 2 consecutive workouts</p>
-              <p className="text-xs text-gray-400">Reasoning: User history shows pattern of skipping after 2 misses. Deploy social intervention.</p>
-              <p className="text-sm text-green-400 mt-2">Action: Sent SMS to accountability buddy ✓</p>
-            </div>
+            {traces.map((trace, i) => (
+              <div
+                key={i}
+                style={{
+                  background: '#0F172A',
+                  border: `1px solid ${trace.riskColor}40`,
+                  borderRadius: '12px',
+                  padding: '20px'
+                }}
+              >
+                <div style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  marginBottom: '16px'
+                }}>
+                  <span style={{
+                    fontFamily: "'Fira Code', monospace",
+                    fontSize: '11px',
+                    color: '#64748B'
+                  }}>
+                    {trace.time}
+                  </span>
+                  <span style={{
+                    padding: '4px 12px',
+                    background: `${trace.riskColor}20`,
+                    color: trace.riskColor,
+                    borderRadius: '6px',
+                    fontSize: '11px',
+                    fontWeight: 700,
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.5px'
+                  }}>
+                    {trace.risk} RISK
+                  </span>
+                </div>
 
-            <div className="bg-gray-950 p-4 rounded border border-gray-800">
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-xs text-gray-400">2025-01-16 18:30:15</span>
-                <span className="px-2 py-1 bg-green-900 text-green-300 rounded text-xs">LOW RISK</span>
+                <div style={{
+                  fontFamily: "'Fira Code', monospace",
+                  fontSize: '13px',
+                  marginBottom: '12px'
+                }}>
+                  <div style={{ color: '#06B6D4', marginBottom: '8px' }}>
+                    [{trace.type}]
+                  </div>
+                  {trace.confidence && (
+                    <div style={{ color: '#CBD5E1', marginBottom: '4px' }}>
+                      Confidence: {trace.confidence}% • Signals: {trace.signals}
+                    </div>
+                  )}
+                  {trace.rate && (
+                    <div style={{ color: '#CBD5E1', marginBottom: '4px' }}>
+                      Completion Rate: {trace.rate} • Recent trend: {trace.trend}
+                    </div>
+                  )}
+                  <div style={{ color: '#94A3B8', fontSize: '12px', marginTop: '8px' }}>
+                    Reasoning: {trace.reasoning}
+                  </div>
+                  <div style={{ color: trace.actionColor, marginTop: '8px' }}>
+                    Action: {trace.action}
+                  </div>
+                </div>
               </div>
-              <p className="font-mono text-sm text-blue-400 mb-2">[PATTERN ANALYSIS]</p>
-              <p className="text-sm text-gray-300 mb-2">Completion Rate: 67% • Recent trend: Stable</p>
-              <p className="text-xs text-gray-400">Reasoning: User on track with 2/4 workouts this week. No intervention needed.</p>
-              <p className="text-sm text-gray-400 mt-2">Action: Continue monitoring</p>
-            </div>
-
-            <div className="bg-gray-950 p-4 rounded border border-gray-800">
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-xs text-gray-400">2025-01-15 22:10:42</span>
-                <span className="px-2 py-1 bg-red-900 text-red-300 rounded text-xs">HIGH RISK</span>
-              </div>
-              <p className="font-mono text-sm text-blue-400 mb-2">[INTERVENTION DEPLOYED]</p>
-              <p className="text-sm text-gray-300 mb-2">Confidence: 89% • Signals: 3 consecutive misses + no future bookings</p>
-              <p className="text-xs text-gray-400">Reasoning: Critical decision point. Financial stake reminder most effective for this user.</p>
-              <p className="text-sm text-green-400 mt-2">Action: Sent financial reminder SMS • User completed next workout ✓</p>
-            </div>
+            ))}
           </div>
         </div>
 
         {/* User Segmentation */}
-        <div className="bg-gray-900 rounded-lg p-6 border border-gray-800">
-          <h2 className="text-2xl font-semibold mb-4">User Segmentation Insights</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className="bg-gray-800 p-4 rounded">
-              <p className="text-sm text-gray-400 mb-1">External Accountability</p>
-              <p className="text-2xl font-bold text-green-400 mb-2">45%</p>
-              <p className="text-xs text-gray-400">Best with social interventions</p>
-            </div>
-            <div className="bg-gray-800 p-4 rounded">
-              <p className="text-sm text-gray-400 mb-1">Financial Motivated</p>
-              <p className="text-2xl font-bold text-purple-400 mb-2">35%</p>
-              <p className="text-xs text-gray-400">Best with stake reminders</p>
-            </div>
-            <div className="bg-gray-800 p-4 rounded">
-              <p className="text-sm text-gray-400 mb-1">Structure Seekers</p>
-              <p className="text-2xl font-bold text-blue-400 mb-2">20%</p>
-              <p className="text-xs text-gray-400">Best with calendar scheduling</p>
-            </div>
+        <div style={{
+          background: 'rgba(30, 41, 59, 0.5)',
+          border: '1px solid rgba(100, 116, 139, 0.2)',
+          borderRadius: '16px',
+          padding: '32px'
+        }}>
+          <h2 style={{
+            fontFamily: "'Space Grotesk', sans-serif",
+            fontSize: '20px',
+            fontWeight: 700,
+            color: '#F1F5F9',
+            marginBottom: '24px'
+          }}>
+            User Segmentation Insights
+          </h2>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {[
+              { label: 'External Accountability', value: '45%', desc: 'Best with social interventions', color: '#10B981' },
+              { label: 'Financial Motivated', value: '35%', desc: 'Best with stake reminders', color: '#8B5CF6' },
+              { label: 'Structure Seekers', value: '20%', desc: 'Best with calendar scheduling', color: '#6366F1' }
+            ].map((segment, i) => (
+              <div
+                key={i}
+                style={{
+                  background: 'rgba(15, 23, 42, 0.5)',
+                  borderRadius: '12px',
+                  padding: '20px',
+                  border: `1px solid ${segment.color}30`,
+                  transition: 'all 0.2s'
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.background = 'rgba(15, 23, 42, 0.8)';
+                  e.currentTarget.style.borderColor = segment.color;
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.background = 'rgba(15, 23, 42, 0.5)';
+                  e.currentTarget.style.borderColor = `${segment.color}30`;
+                }}
+              >
+                <div style={{
+                  color: '#94A3B8',
+                  fontSize: '12px',
+                  marginBottom: '8px',
+                  fontWeight: 500
+                }}>
+                  {segment.label}
+                </div>
+                <div style={{
+                  fontFamily: "'Space Grotesk', sans-serif",
+                  fontSize: '36px',
+                  fontWeight: 700,
+                  color: segment.color,
+                  marginBottom: '8px'
+                }}>
+                  {segment.value}
+                </div>
+                <div style={{ color: '#64748B', fontSize: '12px' }}>
+                  {segment.desc}
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       </div>
