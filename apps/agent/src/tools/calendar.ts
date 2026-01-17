@@ -1,4 +1,5 @@
 import type { ToolDefinition, ToolFn } from '../types.js'
+import { google } from 'googleapis'
 
 export const analyzeCalendarToolDefinition: ToolDefinition = {
   name: 'analyze_calendar',
@@ -43,35 +44,103 @@ interface CalendarAnalysisResult {
   next_scheduled: string | null
 }
 
+/**
+ * Fetch real calendar events from Google Calendar API
+ * Requires OAuth2 credentials or API key
+ */
+async function fetchGoogleCalendarEvents(userId: string, daysBack: number): Promise<any[]> {
+  try {
+    // Check if Google Calendar API credentials are available
+    const apiKey = process.env.GOOGLE_CALENDAR_API_KEY
+    const clientId = process.env.GOOGLE_CALENDAR_CLIENT_ID
+    const clientSecret = process.env.GOOGLE_CALENDAR_CLIENT_SECRET
+    
+    if (!apiKey && !clientId) {
+      console.log('[Calendar] Google Calendar API not configured, using mock data')
+      return []
+    }
+
+    // Initialize Google Calendar API
+    const auth = new google.auth.GoogleAuth({
+      keyFile: process.env.GOOGLE_APPLICATION_CREDENTIALS,
+      scopes: ['https://www.googleapis.com/auth/calendar.readonly'],
+    })
+
+    const calendar = google.calendar({ version: 'v3', auth })
+
+    const startDate = new Date()
+    startDate.setDate(startDate.getDate() - daysBack)
+
+    const response = await calendar.events.list({
+      calendarId: 'primary',
+      timeMin: startDate.toISOString(),
+      timeMax: new Date().toISOString(),
+      singleEvents: true,
+      orderBy: 'startTime',
+    })
+
+    return response.data.items || []
+  } catch (error) {
+    console.error('[Calendar] Error fetching Google Calendar:', error)
+    return []
+  }
+}
+
 export const analyzeCalendar: ToolFn<AnalyzeCalendarInput, string> = async (input) => {
   const { days_back = 7, user_id } = input
 
-  // For hackathon MVP: Return mock data
-  // TODO: Later integrate with Google Calendar API
-
+  // Try to fetch real calendar events
+  const googleEvents = await fetchGoogleCalendarEvents(user_id, days_back)
+  
   const today = new Date()
   const events = []
 
-  // Generate realistic calendar data for the past week
-  for (let i = days_back - 1; i >= 0; i--) {
-    const date = new Date(today)
-    date.setDate(date.getDate() - i)
-    
-    // Assume gym scheduled Mon, Wed, Fri, Sat (4x/week)
-    const dayOfWeek = date.getDay()
-    const isScheduledDay = [1, 3, 5, 6].includes(dayOfWeek) // Mon, Wed, Fri, Sat
+  // If Google Calendar is available, use real data
+  if (googleEvents.length > 0) {
+    for (const event of googleEvents) {
+      // Filter for workout-related events
+      const title = event.summary || ''
+      const isWorkoutRelated = /gym|workout|exercise|fitness|training|run|yoga|crossfit/i.test(title)
+      
+      if (isWorkoutRelated) {
+        const startDate = event.start?.dateTime || event.start?.date
+        if (startDate) {
+          const eventDate = new Date(startDate)
+          events.push({
+            date: eventDate.toISOString().split('T')[0],
+            time: eventDate.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }),
+            title: title,
+            completed: event.status === 'confirmed' && new Date(startDate) < today,
+            skipped_reason: event.status === 'cancelled' ? 'Cancelled' : undefined,
+          })
+        }
+      }
+    }
+  }
 
-    if (isScheduledDay) {
-      // Simulate realistic completion pattern with recent drift
-      const completed = i > 2 ? Math.random() > 0.3 : Math.random() > 0.6
+  // If no real events or API not configured, use mock data
+  if (events.length === 0) {
+    // Generate realistic calendar data for the past week
+    for (let i = days_back - 1; i >= 0; i--) {
+      const date = new Date(today)
+      date.setDate(date.getDate() - i)
+      
+      // Assume gym scheduled Mon, Wed, Fri, Sat (4x/week)
+      const dayOfWeek = date.getDay()
+      const isScheduledDay = [1, 3, 5, 6].includes(dayOfWeek) // Mon, Wed, Fri, Sat
 
-      events.push({
-        date: date.toISOString().split('T')[0],
-        time: '06:00 AM',
-        title: `Gym - ${['Legs', 'Chest', 'Arms', 'Back'][Math.floor(Math.random() * 4)]}`,
-        completed,
-        skipped_reason: !completed ? (Math.random() > 0.5 ? 'Too tired' : 'Work conflict') : undefined,
-      })
+      if (isScheduledDay) {
+        // Simulate realistic completion pattern with recent drift
+        const completed = i > 2 ? Math.random() > 0.3 : Math.random() > 0.6
+
+        events.push({
+          date: date.toISOString().split('T')[0],
+          time: '06:00 AM',
+          title: `Gym - ${['Legs', 'Chest', 'Arms', 'Back'][Math.floor(Math.random() * 4)]}`,
+          completed,
+          skipped_reason: !completed ? (Math.random() > 0.5 ? 'Too tired' : 'Work conflict') : undefined,
+        })
+      }
     }
   }
 
