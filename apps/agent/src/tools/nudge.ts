@@ -68,7 +68,7 @@ async function sendSMS(userId: string, message: string): Promise<{ success: bool
     const twilioMessage = await client.messages.create({
       body: message,
       from: fromNumber,
-      to: toNumber || '+15555555555', // Default test number
+      to: toNumber || '+10000000000', // Placeholder - will fail if not configured
     })
 
     return { success: true, messageId: twilioMessage.sid }

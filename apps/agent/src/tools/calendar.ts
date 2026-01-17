@@ -106,12 +106,15 @@ export const analyzeCalendar: ToolFn<AnalyzeCalendarInput, string> = async (inpu
         const startDate = event.start?.dateTime || event.start?.date
         if (startDate) {
           const eventDate = new Date(startDate)
+          const isPast = eventDate < today
+          const isCancelled = event.status === 'cancelled'
+          
           events.push({
             date: eventDate.toISOString().split('T')[0],
             time: eventDate.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }),
             title: title,
-            completed: event.status === 'confirmed' && new Date(startDate) < today,
-            skipped_reason: event.status === 'cancelled' ? 'Cancelled' : undefined,
+            completed: isPast && !isCancelled && event.status === 'confirmed',
+            skipped_reason: isCancelled ? 'Cancelled' : undefined,
           })
         }
       }

@@ -122,8 +122,12 @@ contract CommitmentContract is ReentrancyGuard, Ownable {
         commitment.isActive = false;
         commitment.isCompleted = true;
         
+        // Calculate payout with bonus (using checked arithmetic in Solidity 0.8+)
         uint256 bonus = (commitment.stakeAmount * bonusPercentage) / 100;
         uint256 payout = commitment.stakeAmount + bonus;
+        
+        // Ensure contract has enough balance for bonus (bonus comes from contract balance)
+        require(address(this).balance >= payout, "Insufficient contract balance for bonus");
         
         emit CommitmentSuccessful(_user, payout);
         

@@ -77,7 +77,7 @@ export default function Home() {
           <div className="flex flex-wrap gap-4 justify-center">
             <span className="px-4 py-2 bg-gray-800 rounded-lg">Venice AI (Llama 3.3 70B)</span>
             <span className="px-4 py-2 bg-gray-800 rounded-lg">Google Gemini</span>
-            <span className="px-4 py-2 bg-gray-800 rounded-lg">Next.js 15</span>
+            <span className="px-4 py-2 bg-gray-800 rounded-lg">Next.js 16</span>
             <span className="px-4 py-2 bg-gray-800 rounded-lg">Base L2</span>
             <span className="px-4 py-2 bg-gray-800 rounded-lg">Twilio</span>
             <span className="px-4 py-2 bg-gray-800 rounded-lg">TypeScript</span>
