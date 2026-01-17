@@ -45,10 +45,39 @@ This is a **custom agent-from-scratch** implementation inspired by Scott Morris'
 |-------|-----------|-----|
 | **Agent Loop** | Custom TypeScript | Full control, no black boxes |
 | **LLM** | Venice AI (Llama 3.3 70B) + Google Gemini | Privacy-focused, powerful reasoning |
-| **Frontend** | Next.js 15 | Fast deployment |
+| **Frontend** | Next.js 15 | Fast deployment, App Router |
 | **Database** | LowDB (JSON) | Simple, persistent |
 | **Blockchain** | Solidity on Base L2 | Low gas, fast finality |
+| **SMS** | Twilio | Multi-channel notifications |
+| **Calendar** | Google Calendar API | Real calendar integration |
 | **Runtime** | Bun | Fast, modern |
+
+## 🔧 Configuration
+
+The application requires API keys for full functionality. Copy `.env.example` to `.env` and configure:
+
+```env
+# LLM Provider (Venice AI or Gemini)
+LLM_PROVIDER=venice
+VENICE_API_KEY=your-venice-key
+GEMINI_API_KEY=your-gemini-key
+
+# Google Calendar (optional - falls back to mock data)
+GOOGLE_CALENDAR_API_KEY=your-api-key
+GOOGLE_APPLICATION_CREDENTIALS=/path/to/credentials.json
+
+# Twilio SMS (optional - falls back to console logging)
+TWILIO_ACCOUNT_SID=your-account-sid
+TWILIO_AUTH_TOKEN=your-auth-token
+TWILIO_PHONE_NUMBER=your-twilio-number
+
+# Blockchain (for smart contracts)
+BASE_RPC_URL=https://sepolia.base.org
+WALLET_PRIVATE_KEY=your-private-key
+CHARITY_ADDRESS=your-charity-wallet
+```
+
+**Note**: The agent works with mock data if APIs are not configured, making it easy to demo without credentials.
 
 ## 🚀 Quick Start
 
@@ -87,6 +116,21 @@ bun run index.ts "Am I at risk of quitting my gym resolution?"
 
 # Or use pnpm
 pnpm start "I missed my workout today. What should I do?"
+```
+
+### Running the Frontend
+
+```bash
+# Navigate to web directory
+cd apps/web
+
+# Install dependencies (if not already done)
+pnpm install
+
+# Start the development server
+pnpm dev
+
+# Open http://localhost:3000 in your browser
 ```
 
 ### Example Interactions
@@ -198,25 +242,31 @@ All agent decisions are logged to `./logs/opic.json` for evaluation:
 - [x] Tool system
 - [x] Memory management
 - [x] Basic CLI interface
+- [x] Venice AI & Gemini integration
 
-### Phase 2: Core Features (Current)
-- [ ] Frontend application
-- [ ] Smart contracts
-- [ ] Real Google Calendar integration
-- [ ] Twilio SMS integration
-- [ ] OPIC dashboard
+### Phase 2: Core Features ✅
+- [x] Frontend application (Next.js 15)
+- [x] Smart contracts (CommitmentContract.sol)
+- [x] Real Google Calendar integration
+- [x] Twilio SMS integration
+- [x] OPIC evaluation dashboard
+- [x] User dashboard with metrics
+- [x] Landing page with navigation
 
-### Phase 3: Polish
-- [ ] A/B testing framework
-- [ ] User segmentation
-- [ ] Advanced pattern detection
-- [ ] Self-improvement loops
+### Phase 3: Testing & Polish (Next)
+- [ ] End-to-end integration testing
+- [ ] API route connections
+- [ ] Smart contract deployment to testnet
+- [ ] Real-time data updates
+- [ ] Performance optimization
+- [ ] Accessibility testing
 
 ### Phase 4: Deployment
-- [ ] Vercel deployment (frontend)
-- [ ] Akash Network (backend)
-- [ ] Base mainnet contracts
+- [ ] Deploy frontend to Vercel
+- [ ] Deploy backend to Akash
+- [ ] Deploy contracts to Base mainnet
 - [ ] Video pitch
+- [ ] Documentation updates
 - [ ] Submission materials
 
 ## 📚 Documentation
