@@ -13,7 +13,8 @@ const config: HardhatUserConfig = {
   },
   networks: {
     hardhat: {
-      type: "edr-simulated"
+      type: "edr-simulated",
+      chainId: 31337,
     },
     baseSepolia: {
       type: "http",
