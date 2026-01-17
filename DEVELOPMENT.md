@@ -15,7 +15,7 @@ pnpm install
 ```bash
 cd apps/agent
 cp .env.example .env
-# Edit .env and add your OPENAI_API_KEY
+# Edit .env and add your VENICE_API_KEY or GEMINI_API_KEY
 ```
 
 3. **Test the Agent**
@@ -28,7 +28,7 @@ bun run index.ts "Am I at risk of quitting?"
 ### Phase 4: Testing & Validation (Current Phase)
 
 #### Task List
-- [ ] Set up OpenAI API key
+- [ ] Set up Venice AI or Gemini API key
 - [ ] Test basic agent queries
 - [ ] Validate all tool executions
 - [ ] Check OPIC logging
@@ -307,7 +307,7 @@ pnpm install
 **Issue: "OpenAI API error"**
 ```bash
 # Solution: Check API key and quota
-echo $OPENAI_API_KEY
+echo $VENICE_API_KEY or GEMINI_API_KEY
 # Verify at platform.openai.com
 ```
 

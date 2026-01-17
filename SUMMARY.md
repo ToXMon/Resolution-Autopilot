@@ -16,7 +16,7 @@ Following **Ryan Carson's methodology** (PRD → Spec → Tasks → TDD), we've 
 Built a **custom AI agent from scratch** following Scott Morris's pattern:
 
 - ✅ **Agent Loop** (`agent.ts`) - Simple while loop with tool execution
-- ✅ **LLM Integration** (`llm.ts`) - Direct OpenAI GPT-4o calls
+- ✅ **LLM Integration** (`llm.ts`) - Direct Venice AI and Google Gemini calls
 - ✅ **Type System** (`types.ts`) - Zod schemas for validation
 - ✅ **Memory Management** (`memory.ts`) - LowDB for persistent storage
 - ✅ **System Prompt** (`systemPrompt.ts`) - Comprehensive agent instructions
@@ -76,7 +76,7 @@ User Message → Context Building → LLM Reasoning → Tool Execution → Respo
 
 ### What Works Right Now
 - ✅ Agent accepts user queries
-- ✅ Calls GPT-4o for reasoning
+- ✅ Calls Llama 3.3 70B / Gemini 1.5 Pro for reasoning
 - ✅ Executes tools based on LLM decisions
 - ✅ Logs everything to database and OPIC
 - ✅ Returns thoughtful responses
@@ -102,7 +102,7 @@ Expected behavior:
 ### Immediate Actions (5 minutes)
 1. Install dependencies: `pnpm install`
 2. Setup .env: `cp apps/agent/.env.example apps/agent/.env`
-3. Add OpenAI key to .env
+3. Add Venice AI / Gemini key to .env
 4. Test: `cd apps/agent && bun run index.ts "Hello"`
 
 ### Testing Checklist (1-2 hours)
@@ -277,7 +277,7 @@ This implementation follows:
 - **Ryan Carson's Methodology**: PRD → Spec → Tasks → TDD
 - **Scott Morris's Pattern**: Custom agent-from-scratch
 - **Encode Hackathon**: Requirements and judging criteria
-- **OpenAI Best Practices**: Function calling and tool use
+- **Venice AI / Gemini Best Practices**: Function calling and tool use
 
 ## 🎬 What's Next?
 

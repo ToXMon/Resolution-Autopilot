@@ -18,9 +18,9 @@ bun install
 cp .env.example .env
 ```
 
-3. Add your OpenAI API key to `.env`:
+3. Add your Venice AI or Gemini API key to `.env`:
 ```
-OPENAI_API_KEY=sk-your-key-here
+VENICE_API_KEY or GEMINI_API_KEY=sk-your-key-here
 ```
 
 ## Usage
@@ -63,7 +63,7 @@ The agent follows a simple loop:
 
 1. **User Input** → Agent receives your message
 2. **Context Building** → Loads your profile and history
-3. **LLM Reasoning** → GPT-4o analyzes patterns and decides actions
+3. **LLM Reasoning** → Venice AI (Llama 3.3 70B) or Gemini 1.5 Pro analyzes patterns and decides actions
 4. **Tool Execution** → Calls tools (calendar, patterns, intervention)
 5. **Response** → Returns analysis and recommendations
 
@@ -102,7 +102,7 @@ bun run lint
 apps/agent/
 ├── src/
 │   ├── agent.ts         # Main agent loop
-│   ├── llm.ts          # GPT-4o integration
+│   ├── llm.ts          # Venice AI (Llama 3.3 70B) or Gemini 1.5 Pro integration
 │   ├── types.ts        # Type definitions
 │   ├── systemPrompt.ts # Agent instructions
 │   ├── memory.ts       # Database layer
@@ -123,11 +123,11 @@ apps/agent/
 
 ## Troubleshooting
 
-### "OpenAI API key not found"
+### "Venice AI or Gemini API key not found"
 
 Make sure you've:
 1. Created `.env` file (copy from `.env.example`)
-2. Added your API key: `OPENAI_API_KEY=sk-...`
+2. Added your API key: `VENICE_API_KEY or GEMINI_API_KEY=sk-...`
 3. Restarted the agent
 
 ### "Module not found"
@@ -146,7 +146,7 @@ The agent has a maximum of 10 iterations. If it reaches this limit, it will stop
 This agent is built **from scratch** (no LangChain/LLaMA) following Scott Morris's pattern:
 
 - Simple while loop for agent reasoning
-- Direct OpenAI API calls with tool definitions
+- Direct Venice AI / Gemini API calls with tool definitions
 - JSON-based persistent storage (LowDB)
 - Full transparency and observability
 

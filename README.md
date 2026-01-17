@@ -44,7 +44,7 @@ This is a **custom agent-from-scratch** implementation inspired by Scott Morris'
 | Layer | Technology | Why |
 |-------|-----------|-----|
 | **Agent Loop** | Custom TypeScript | Full control, no black boxes |
-| **LLM** | GPT-4o (OpenAI) | Best reasoning, tool use |
+| **LLM** | Venice AI (Llama 3.3 70B) + Google Gemini | Privacy-focused, powerful reasoning |
 | **Frontend** | Next.js 15 | Fast deployment |
 | **Database** | LowDB (JSON) | Simple, persistent |
 | **Blockchain** | Solidity on Base L2 | Low gas, fast finality |
@@ -56,7 +56,7 @@ This is a **custom agent-from-scratch** implementation inspired by Scott Morris'
 
 - Node.js >= 18
 - Bun >= 1.0.0 (or pnpm)
-- OpenAI API key
+- Venice AI API key (or Google Gemini API key)
 
 ### Installation
 
@@ -71,8 +71,9 @@ pnpm install
 # Copy environment variables
 cp .env.example .env
 
-# Add your OpenAI API key to .env
-# OPENAI_API_KEY=sk-...
+# Add your Venice AI API key to .env
+# LLM_PROVIDER=venice
+# VENICE_API_KEY=your-key-here
 ```
 
 ### Running the Agent
@@ -237,7 +238,7 @@ MIT
 - Scott Morris for the agent-from-scratch pattern
 - Ryan Carson for the PRD → Spec → Tasks → TDD methodology
 - Encode Hackathon for the opportunity
-- OpenAI for GPT-4o
+- Venice AI and Google for privacy-focused LLM solutions
 
 ---
 

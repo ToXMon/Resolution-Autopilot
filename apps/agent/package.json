@@ -12,7 +12,6 @@
     "clean": "rm -rf dist db.json"
   },
   "dependencies": {
-    "openai": "^4.24.1",
     "dotenv": "^16.3.1",
     "lowdb": "^7.0.1",
     "uuid": "^9.0.1",

@@ -79,9 +79,16 @@ cd apps/agent
 cp .env.example .env
 ```
 
-Edit `.env` and add your OpenAI API key:
+Edit `.env` and add your Venice AI or Gemini API key:
 ```
-OPENAI_API_KEY=sk-your-key-here
+LLM_PROVIDER=venice
+VENICE_API_KEY=your-venice-api-key-here
+```
+
+Or for Gemini:
+```
+LLM_PROVIDER=gemini
+GEMINI_API_KEY=your-gemini-api-key-here
 ```
 
 ### Step 3: Run the Agent
@@ -172,10 +179,11 @@ bun run index.ts "Show me my stake status"
 
 ## 🐛 Troubleshooting
 
-### "OpenAI API key not found"
+### "LLM API key not found"
 1. Check `.env` file exists in `apps/agent/`
-2. Verify `OPENAI_API_KEY=sk-...` is set
-3. Restart the agent
+2. Verify you've set either `VENICE_API_KEY` or `GEMINI_API_KEY`
+3. Verify `LLM_PROVIDER` is set to 'venice' or 'gemini'
+4. Restart the agent
 
 ### "Module not found"
 ```bash
@@ -251,7 +259,7 @@ cat apps/agent/logs/opic.json | jq
 
 ### Technical Stack
 - **Runtime**: Bun (fast, modern)
-- **LLM**: GPT-4o (best reasoning)
+- **LLM**: Venice AI (Llama 3.3 70B) or Google Gemini 1.5 Pro (powerful reasoning)
 - **Database**: LowDB (simple JSON)
 - **Types**: Zod (runtime validation)
 - **Language**: TypeScript (type safety)
@@ -268,8 +276,8 @@ cat apps/agent/logs/opic.json | jq
 
 ### Common Questions
 
-**Q: Can I test without OpenAI key?**
-A: No, you need a valid OpenAI API key. Sign up at platform.openai.com
+**Q: Can I test without Venice AI or Gemini key?**
+A: No, you need a valid API key from either Venice AI or Google Gemini. Venice AI offers privacy-focused AI, while Gemini provides powerful reasoning capabilities.
 
 **Q: Why mock data instead of real APIs?**
 A: MVP strategy - ship fast, integrate later. Real APIs come in Phase 5-6.
@@ -306,7 +314,7 @@ A: Coming in Phase 4. Framework is ready for testing.
 
 ## 🚀 Next Steps
 
-1. **Right Now**: Test the agent with your OpenAI key
+1. **Right Now**: Test the agent with your Venice AI or Gemini key
 2. **Today**: Validate all tools work correctly
 3. **This Week**: Write tests and iterate
 4. **Next Week**: Build frontend

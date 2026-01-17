@@ -94,11 +94,11 @@ This document provides an iterative, week-by-week task breakdown for building th
   - **Success Criteria**: No installation errors
   - **Test**: `pnpm --version` works
 
-- [ ] **Task 4.2**: Setup OpenAI API key
+- [ ] **Task 4.2**: Setup Venice AI or Gemini API key
   ```bash
   cd apps/agent
   cp .env.example .env
-  # Add OPENAI_API_KEY to .env
+  # Add VENICE_API_KEY or GEMINI_API_KEY to .env
   ```
   - **Success Criteria**: Key is valid
   - **Test**: Make a simple API call
