@@ -36,6 +36,30 @@ export default function Home() {
           </div>
           <div className="flex gap-3">
             <Link 
+              href="/onboarding"
+              style={{
+                padding: '10px 20px',
+                background: 'rgba(16, 185, 129, 0.1)',
+                color: '#10B981',
+                border: '1px solid rgba(16, 185, 129, 0.3)',
+                borderRadius: '8px',
+                fontWeight: 600,
+                fontSize: '14px',
+                textDecoration: 'none',
+                transition: 'all 0.2s'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = 'rgba(16, 185, 129, 0.2)';
+                e.currentTarget.style.borderColor = '#10B981';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = 'rgba(16, 185, 129, 0.1)';
+                e.currentTarget.style.borderColor = 'rgba(16, 185, 129, 0.3)';
+              }}
+            >
+              Get Started
+            </Link>
+            <Link 
               href="/dashboard"
               style={{
                 padding: '10px 20px',
@@ -125,10 +149,10 @@ export default function Home() {
           
           <div className="flex gap-4 justify-center">
             <Link 
-              href="/dashboard"
+              href="/onboarding"
               style={{
                 padding: '16px 32px',
-                background: '#6366F1',
+                background: '#10B981',
                 color: '#fff',
                 borderRadius: '10px',
                 fontWeight: 600,
@@ -138,24 +162,24 @@ export default function Home() {
                 alignItems: 'center',
                 gap: '8px',
                 transition: 'all 0.2s',
-                boxShadow: '0 4px 14px rgba(99, 102, 241, 0.4)'
+                boxShadow: '0 4px 14px rgba(16, 185, 129, 0.4)'
               }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.background = '#4F46E5';
+                e.currentTarget.style.background = '#059669';
                 e.currentTarget.style.transform = 'translateY(-2px)';
-                e.currentTarget.style.boxShadow = '0 6px 20px rgba(99, 102, 241, 0.5)';
+                e.currentTarget.style.boxShadow = '0 6px 20px rgba(16, 185, 129, 0.5)';
               }}
               onMouseLeave={(e) => {
-                e.currentTarget.style.background = '#6366F1';
+                e.currentTarget.style.background = '#10B981';
                 e.currentTarget.style.transform = 'translateY(0)';
-                e.currentTarget.style.boxShadow = '0 4px 14px rgba(99, 102, 241, 0.4)';
+                e.currentTarget.style.boxShadow = '0 4px 14px rgba(16, 185, 129, 0.4)';
               }}
             >
-              View Dashboard
+              Get Started
               <span>→</span>
             </Link>
             <Link 
-              href="/evaluation"
+              href="/dashboard"
               style={{
                 padding: '16px 32px',
                 background: 'rgba(51, 65, 85, 0.6)',
@@ -179,8 +203,7 @@ export default function Home() {
                 e.currentTarget.style.borderColor = 'rgba(100, 116, 139, 0.3)';
               }}
             >
-              OPIC Metrics
-              <span>📊</span>
+              View Dashboard
             </Link>
           </div>
         </div>

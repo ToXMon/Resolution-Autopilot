@@ -1,5 +1,7 @@
 'use client';
 
+import Link from 'next/link';
+
 export default function DashboardPage() {
   const weekDays = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
   const weekStatus = [true, true, false, false, false, true, null]; // true=done, false=missed, null=today
@@ -22,16 +24,37 @@ export default function DashboardPage() {
               Real-time pattern detection and behavioral insights
             </p>
           </div>
-          <div style={{
-            padding: '8px 16px',
-            background: 'rgba(16, 185, 129, 0.1)',
-            border: '1px solid rgba(16, 185, 129, 0.3)',
-            borderRadius: '8px',
-            color: '#10B981',
-            fontSize: '13px',
-            fontWeight: 600
-          }}>
-            ● Active
+          <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+            <Link
+              href="/workout"
+              style={{
+                padding: '10px 20px',
+                background: '#10B981',
+                color: '#fff',
+                borderRadius: '8px',
+                fontWeight: 600,
+                fontSize: '14px',
+                textDecoration: 'none',
+                transition: 'all 0.2s',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '6px'
+              }}
+            >
+              <span>🏋️</span>
+              Start Workout
+            </Link>
+            <div style={{
+              padding: '8px 16px',
+              background: 'rgba(16, 185, 129, 0.1)',
+              border: '1px solid rgba(16, 185, 129, 0.3)',
+              borderRadius: '8px',
+              color: '#10B981',
+              fontSize: '13px',
+              fontWeight: 600
+            }}>
+              ● Active
+            </div>
           </div>
         </div>
 
