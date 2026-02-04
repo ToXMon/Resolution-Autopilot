@@ -1,10 +1,102 @@
 'use client';
 
 import Link from 'next/link';
+import { useState, useEffect, useCallback } from 'react';
+
+interface DashboardStats {
+  weekPattern: (boolean | null)[];
+  completionRate: number;
+  driftRisk: 'LOW' | 'MEDIUM' | 'HIGH';
+  driftConfidence: number;
+  driftSignals: string[];
+  workoutsThisWeek: number;
+  targetWorkouts: number;
+  totalMinutes: number;
+  currentStreak: number;
+  milestones: {
+    completed: number;
+    total: number;
+  };
+}
+
+interface Activity {
+  title: string;
+  desc: string;
+  icon: string;
+  color: string;
+}
+
+interface AgentMessage {
+  type: 'info' | 'warning' | 'success';
+  message: string;
+}
+
+interface DashboardData {
+  stats: DashboardStats;
+  recentActivity: Activity[];
+  agentReasoning: AgentMessage[];
+  profile: {
+    stake_amount: number;
+  };
+}
 
 export default function DashboardPage() {
   const weekDays = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
-  const weekStatus = [true, true, false, false, false, true, null]; // true=done, false=missed, null=today
+  
+  const [data, setData] = useState<DashboardData | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const fetchDashboardData = useCallback(async () => {
+    try {
+      const response = await fetch('/api/dashboard?user_id=demo_user_001');
+      if (!response.ok) {
+        throw new Error('Failed to fetch dashboard data');
+      }
+      const result = await response.json();
+      setData(result);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Unknown error');
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchDashboardData();
+  }, [fetchDashboardData]);
+
+  // Default values when loading or error
+  const stats = data?.stats || {
+    weekPattern: [false, false, false, false, false, false, null],
+    completionRate: 0,
+    driftRisk: 'LOW' as const,
+    driftConfidence: 30,
+    driftSignals: [],
+    workoutsThisWeek: 0,
+    targetWorkouts: 4,
+    totalMinutes: 0,
+    currentStreak: 0,
+    milestones: { completed: 0, total: 4 },
+  };
+
+  const recentActivity = data?.recentActivity || [];
+  const agentReasoning = data?.agentReasoning || [];
+  const stakeAmount = data?.profile?.stake_amount || 100;
+
+  const getRiskColor = (risk: string) => {
+    switch (risk) {
+      case 'HIGH': return '#EF4444';
+      case 'MEDIUM': return '#F59E0B';
+      default: return '#10B981';
+    }
+  };
+
+  const getCompletionColor = (rate: number) => {
+    if (rate >= 75) return '#10B981';
+    if (rate >= 50) return '#F59E0B';
+    return '#EF4444';
+  };
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: '#0F172A' }}>
@@ -46,17 +138,30 @@ export default function DashboardPage() {
             </Link>
             <div style={{
               padding: '8px 16px',
-              background: 'rgba(16, 185, 129, 0.1)',
-              border: '1px solid rgba(16, 185, 129, 0.3)',
+              background: loading ? 'rgba(100, 116, 139, 0.2)' : 'rgba(16, 185, 129, 0.1)',
+              border: loading ? '1px solid rgba(100, 116, 139, 0.3)' : '1px solid rgba(16, 185, 129, 0.3)',
               borderRadius: '8px',
-              color: '#10B981',
+              color: loading ? '#94A3B8' : '#10B981',
               fontSize: '13px',
               fontWeight: 600
             }}>
-              ● Active
+              {loading ? '● Loading...' : '● Active'}
             </div>
           </div>
         </div>
+
+        {error && (
+          <div style={{
+            background: 'rgba(239, 68, 68, 0.1)',
+            border: '1px solid rgba(239, 68, 68, 0.3)',
+            borderRadius: '12px',
+            padding: '16px',
+            marginBottom: '24px',
+            color: '#EF4444'
+          }}>
+            Error: {error}
+          </div>
+        )}
 
         {/* Pattern Detection Card */}
         <div style={{
@@ -91,11 +196,11 @@ export default function DashboardPage() {
                   width: '48px',
                   height: '48px',
                   borderRadius: '10px',
-                  background: weekStatus[i] === true ? 'rgba(16, 185, 129, 0.2)' :
-                              weekStatus[i] === false ? 'rgba(239, 68, 68, 0.2)' :
+                  background: stats.weekPattern[i] === true ? 'rgba(16, 185, 129, 0.2)' :
+                              stats.weekPattern[i] === false ? 'rgba(239, 68, 68, 0.2)' :
                               'rgba(99, 102, 241, 0.2)',
-                  border: weekStatus[i] === true ? '2px solid #10B981' :
-                          weekStatus[i] === false ? '2px solid #EF4444' :
+                  border: stats.weekPattern[i] === true ? '2px solid #10B981' :
+                          stats.weekPattern[i] === false ? '2px solid #EF4444' :
                           '2px solid #6366F1',
                   display: 'flex',
                   alignItems: 'center',
@@ -106,8 +211,8 @@ export default function DashboardPage() {
                 }}
                 className="hover:scale-110"
                 >
-                  {weekStatus[i] === true ? '✓' :
-                   weekStatus[i] === false ? '✗' : '•'}
+                  {stats.weekPattern[i] === true ? '✓' :
+                   stats.weekPattern[i] === false ? '✗' : '•'}
                 </div>
               </div>
             ))}
@@ -130,13 +235,15 @@ export default function DashboardPage() {
                 fontFamily: "'Space Grotesk', sans-serif",
                 fontSize: '28px',
                 fontWeight: 700,
-                color: '#F59E0B',
+                color: getCompletionColor(stats.completionRate),
                 display: 'flex',
                 alignItems: 'center',
                 gap: '8px'
               }}>
-                50%
-                <span style={{ fontSize: '16px', color: '#EF4444' }}>↓</span>
+                {stats.completionRate}%
+                <span style={{ fontSize: '16px', color: stats.completionRate >= 50 ? '#10B981' : '#EF4444' }}>
+                  {stats.completionRate >= 50 ? '↑' : '↓'}
+                </span>
               </div>
             </div>
             <div>
@@ -147,11 +254,11 @@ export default function DashboardPage() {
                 fontFamily: "'Space Grotesk', sans-serif",
                 fontSize: '20px',
                 fontWeight: 700,
-                color: '#F59E0B'
+                color: getRiskColor(stats.driftRisk)
               }}>
-                MEDIUM
+                {stats.driftRisk}
                 <div style={{ fontSize: '12px', color: '#94A3B8', fontWeight: 400, marginTop: '2px' }}>
-                  72% confidence
+                  {stats.driftConfidence}% confidence
                 </div>
               </div>
             </div>
@@ -161,10 +268,12 @@ export default function DashboardPage() {
               </div>
               <div style={{
                 fontSize: '14px',
-                color: '#F59E0B'
+                color: getRiskColor(stats.driftRisk)
               }}>
-                • 2 consecutive misses<br/>
-                • No future bookings
+                {stats.driftSignals.length > 0 
+                  ? stats.driftSignals.map((s, i) => <div key={i}>• {s}</div>)
+                  : '• On track ✓'
+                }
               </div>
             </div>
           </div>
@@ -202,7 +311,7 @@ export default function DashboardPage() {
                   fontWeight: 700,
                   color: '#6366F1'
                 }}>
-                  $100
+                  ${stakeAmount}
                 </div>
               </div>
 
@@ -217,18 +326,20 @@ export default function DashboardPage() {
                   marginBottom: '12px'
                 }}>
                   <span style={{ color: '#94A3B8', fontSize: '13px' }}>Milestones</span>
-                  <span style={{ color: '#F1F5F9', fontSize: '13px', fontWeight: 600 }}>2 / 4</span>
+                  <span style={{ color: '#F1F5F9', fontSize: '13px', fontWeight: 600 }}>
+                    {stats.milestones.completed} / {stats.milestones.total}
+                  </span>
                 </div>
                 
                 <div style={{ display: 'flex', gap: '8px', marginBottom: '16px' }}>
-                  {[true, true, false, false].map((done, i) => (
+                  {Array.from({ length: stats.milestones.total }).map((_, i) => (
                     <div
                       key={i}
                       style={{
                         flex: 1,
                         height: '8px',
                         borderRadius: '4px',
-                        background: done ? '#10B981' : 'rgba(100, 116, 139, 0.3)'
+                        background: i < stats.milestones.completed ? '#10B981' : 'rgba(100, 116, 139, 0.3)'
                       }}
                     />
                   ))}
@@ -246,7 +357,7 @@ export default function DashboardPage() {
                     fontWeight: 700,
                     fontFamily: "'Space Grotesk', sans-serif"
                   }}>
-                    $110
+                    ${Math.round(stakeAmount * 1.1)}
                   </span>
                 </div>
               </div>
@@ -281,7 +392,7 @@ export default function DashboardPage() {
                   fontWeight: 700,
                   color: '#F1F5F9'
                 }}>
-                  2 <span style={{ fontSize: '24px', color: '#64748B' }}>/ 4</span>
+                  {stats.workoutsThisWeek} <span style={{ fontSize: '24px', color: '#64748B' }}>/ {stats.targetWorkouts}</span>
                 </div>
               </div>
 
@@ -293,12 +404,12 @@ export default function DashboardPage() {
                   fontFamily: "'Space Grotesk', sans-serif",
                   fontSize: '28px',
                   fontWeight: 700,
-                  color: '#F59E0B',
+                  color: stats.currentStreak > 0 ? '#F59E0B' : '#64748B',
                   display: 'flex',
                   alignItems: 'center',
                   gap: '8px'
                 }}>
-                  🔥 3 days
+                  {stats.currentStreak > 0 ? '🔥' : ''} {stats.currentStreak} day{stats.currentStreak !== 1 ? 's' : ''}
                 </div>
               </div>
 
@@ -309,7 +420,7 @@ export default function DashboardPage() {
                 fontSize: '12px',
                 color: '#94A3B8'
               }}>
-                <strong style={{ color: '#F1F5F9' }}>Next workout:</strong> Tomorrow at 6:00 AM
+                <strong style={{ color: '#F1F5F9' }}>Total time:</strong> {stats.totalMinutes} minutes this week
               </div>
             </div>
           </div>
@@ -347,21 +458,27 @@ export default function DashboardPage() {
             fontSize: '13px',
             lineHeight: '1.8'
           }}>
-            <div style={{ color: '#06B6D4', marginBottom: '12px' }}>
-              [Agent] Analyzing workout patterns...
-            </div>
-            <div style={{ color: '#CBD5E1', marginBottom: '12px' }}>
-              User has completed 2/4 workouts this week (50% completion rate)
-            </div>
-            <div style={{ color: '#F59E0B', marginBottom: '12px' }}>
-              [Warning] Detected drift signal: Missed 2 consecutive workouts
-            </div>
-            <div style={{ color: '#06B6D4', marginBottom: '12px' }}>
-              [Agent] Deploying intervention: Send motivational SMS
-            </div>
-            <div style={{ color: '#10B981' }}>
-              [Success] Intervention deployed successfully
-            </div>
+            {agentReasoning.length > 0 ? agentReasoning.map((msg, i) => (
+              <div key={i} style={{ 
+                color: msg.type === 'info' ? '#06B6D4' : 
+                       msg.type === 'warning' ? '#F59E0B' : '#10B981',
+                marginBottom: i < agentReasoning.length - 1 ? '12px' : 0
+              }}>
+                {msg.type === 'info' && '[Agent] '}
+                {msg.type === 'warning' && '[Warning] '}
+                {msg.type === 'success' && '[Success] '}
+                {msg.message}
+              </div>
+            )) : (
+              <>
+                <div style={{ color: '#06B6D4', marginBottom: '12px' }}>
+                  [Agent] Analyzing workout patterns...
+                </div>
+                <div style={{ color: '#CBD5E1' }}>
+                  Waiting for data...
+                </div>
+              </>
+            )}
           </div>
         </div>
 
@@ -383,11 +500,7 @@ export default function DashboardPage() {
           </h2>
 
           <div className="space-y-3">
-            {[
-              { title: 'Workout Completed', desc: 'Gym - Legs • Today at 6:00 AM', icon: '✓', color: '#10B981' },
-              { title: 'Intervention Sent', desc: 'Motivational SMS • Yesterday at 5:30 PM', icon: '📱', color: '#6366F1' },
-              { title: 'Workout Missed', desc: 'Gym - Chest • 2 days ago', icon: '✗', color: '#EF4444' }
-            ].map((activity, i) => (
+            {recentActivity.length > 0 ? recentActivity.map((activity, i) => (
               <div
                 key={i}
                 style={{
@@ -417,7 +530,17 @@ export default function DashboardPage() {
                   {activity.icon}
                 </div>
               </div>
-            ))}
+            )) : (
+              <div style={{
+                background: 'rgba(15, 23, 42, 0.5)',
+                borderRadius: '10px',
+                padding: '24px',
+                textAlign: 'center',
+                color: '#64748B'
+              }}>
+                No recent activity. Start a workout to see your progress!
+              </div>
+            )}
           </div>
         </div>
       </div>
