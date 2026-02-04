@@ -56,8 +56,8 @@ function WorkoutCompleteContent() {
     logWorkout();
   }, [logged, exercise, duration, reps, sets, formQuality]);
 
-  // Calculate weekly progress (simple estimate)
-  const weeklyProgress = stats ? Math.min(stats.total_workouts, 4) : 3;
+  // Calculate weekly progress - use actual stats if available, otherwise 0
+  const weeklyProgress = stats ? Math.min(stats.total_workouts, 4) : 0;
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: '#0F172A' }}>

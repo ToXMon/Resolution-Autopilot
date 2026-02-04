@@ -93,8 +93,8 @@ export async function GET(request: NextRequest) {
 
     // Calculate stats
     const completedDays = weekPattern.filter(d => d === true).length;
-    const totalDays = weekPattern.filter(d => d !== null).length || 1;
-    const completionRate = Math.round((completedDays / Math.max(totalDays, 4)) * 100);
+    const targetWorkoutsPerWeek = 4;
+    const completionRate = Math.min(100, Math.round((completedDays / targetWorkoutsPerWeek) * 100));
 
     // Determine drift risk
     const missedConsecutive = weekPattern.slice(-3).filter(d => d === false).length;

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { v4 as uuidv4 } from 'uuid';
+import { randomUUID } from 'crypto';
 import fs from 'fs/promises';
 import path from 'path';
 
@@ -67,7 +67,7 @@ export async function POST(request: NextRequest) {
 
     // Create workout log
     const workoutLog: WorkoutLog = {
-      workout_id: uuidv4(),
+      workout_id: randomUUID(),
       user_id,
       exercise_type,
       duration_minutes,
