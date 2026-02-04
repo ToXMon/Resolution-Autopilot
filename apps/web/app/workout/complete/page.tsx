@@ -1,8 +1,64 @@
 'use client';
 
 import Link from 'next/link';
+import { useEffect, useState, Suspense } from 'react';
+import { useSearchParams } from 'next/navigation';
 
-export default function WorkoutCompletePage() {
+function WorkoutCompleteContent() {
+  const searchParams = useSearchParams();
+  const [logged, setLogged] = useState(false);
+  const [stats, setStats] = useState<{
+    total_workouts: number;
+    workouts_today: number;
+  } | null>(null);
+  const [error, setError] = useState<string | null>(null);
+
+  // Get workout data from URL params or use defaults
+  const exercise = searchParams.get('exercise') || 'SQUATS';
+  const reps = parseInt(searchParams.get('reps') || '45', 10);
+  const sets = parseInt(searchParams.get('sets') || '3', 10);
+  const duration = parseInt(searchParams.get('duration') || '15', 10);
+  const formQuality = searchParams.get('form') || 'good';
+
+  useEffect(() => {
+    const logWorkout = async () => {
+      if (logged) return;
+      
+      try {
+        const response = await fetch('/api/workout', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            user_id: 'demo_user_001',
+            exercise_type: exercise.toLowerCase(),
+            duration_minutes: duration,
+            reps,
+            sets,
+            form_quality: formQuality,
+            notes: 'Completed via workout tracker',
+          }),
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to log workout');
+        }
+
+        const data = await response.json();
+        setStats(data.stats);
+        setLogged(true);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'Unknown error');
+      }
+    };
+
+    logWorkout();
+  }, [logged, exercise, duration, reps, sets, formQuality]);
+
+  // Calculate weekly progress (simple estimate)
+  const weeklyProgress = stats ? Math.min(stats.total_workouts, 4) : 3;
+
   return (
     <div className="min-h-screen" style={{ backgroundColor: '#0F172A' }}>
       <div className="max-w-md mx-auto px-6 py-12 flex flex-col items-center justify-center min-h-screen">
@@ -27,8 +83,23 @@ export default function WorkoutCompletePage() {
           color: '#94A3B8',
           marginBottom: '32px'
         }}>
-          Great job! You crushed it today.
+          {logged ? 'Great job! Your workout has been logged.' : 'Logging your workout...'}
         </div>
+
+        {error && (
+          <div style={{
+            background: 'rgba(239, 68, 68, 0.1)',
+            border: '1px solid rgba(239, 68, 68, 0.3)',
+            borderRadius: '12px',
+            padding: '16px',
+            marginBottom: '24px',
+            color: '#EF4444',
+            width: '100%',
+            textAlign: 'center'
+          }}>
+            {error}
+          </div>
+        )}
 
         {/* Workout Summary */}
         <div style={{
@@ -47,7 +118,7 @@ export default function WorkoutCompletePage() {
             marginBottom: '20px',
             textAlign: 'center'
           }}>
-            SQUATS
+            {exercise}
           </div>
 
           <div style={{
@@ -63,7 +134,7 @@ export default function WorkoutCompletePage() {
               fontWeight: 700,
               color: '#F1F5F9'
             }}>
-              45
+              {reps}
             </span>
           </div>
 
@@ -80,7 +151,7 @@ export default function WorkoutCompletePage() {
               fontWeight: 700,
               color: '#F1F5F9'
             }}>
-              15:42
+              {duration}:00
             </span>
           </div>
 
@@ -97,7 +168,7 @@ export default function WorkoutCompletePage() {
             }}>
               <span style={{ color: '#10B981', fontSize: '20px' }}>✓</span>
               <span style={{ color: '#10B981', fontSize: '14px', fontWeight: 600 }}>
-                3 sets completed
+                {sets} sets completed
               </span>
             </div>
             <div style={{
@@ -108,7 +179,7 @@ export default function WorkoutCompletePage() {
             }}>
               <span style={{ color: '#10B981', fontSize: '20px' }}>✓</span>
               <span style={{ color: '#10B981', fontSize: '14px', fontWeight: 600 }}>
-                Form: GOOD
+                Form: {formQuality.toUpperCase()}
               </span>
             </div>
             <div style={{
@@ -118,7 +189,7 @@ export default function WorkoutCompletePage() {
             }}>
               <span style={{ color: '#10B981', fontSize: '20px' }}>✓</span>
               <span style={{ color: '#10B981', fontSize: '14px', fontWeight: 600 }}>
-                New streak day!
+                {logged ? 'Logged to your profile!' : 'Logging...'}
               </span>
             </div>
           </div>
@@ -147,14 +218,14 @@ export default function WorkoutCompletePage() {
             gap: '8px',
             marginBottom: '12px'
           }}>
-            {[true, true, true, false].map((completed, i) => (
+            {[1, 2, 3, 4].map((i) => (
               <div
                 key={i}
                 style={{
                   flex: 1,
                   height: '12px',
                   borderRadius: '6px',
-                  background: completed ? '#6366F1' : 'rgba(100, 116, 139, 0.3)'
+                  background: i <= weeklyProgress ? '#6366F1' : 'rgba(100, 116, 139, 0.3)'
                 }}
               />
             ))}
@@ -167,7 +238,7 @@ export default function WorkoutCompletePage() {
             fontWeight: 700,
             color: '#6366F1'
           }}>
-            3/4 workouts this week
+            {weeklyProgress}/4 workouts this week
           </div>
         </div>
 
@@ -219,5 +290,17 @@ export default function WorkoutCompletePage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function WorkoutCompletePage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: '#0F172A' }}>
+        <div style={{ color: '#F1F5F9', fontSize: '18px' }}>Loading...</div>
+      </div>
+    }>
+      <WorkoutCompleteContent />
+    </Suspense>
   );
 }
