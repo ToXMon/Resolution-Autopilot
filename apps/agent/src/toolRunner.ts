@@ -7,8 +7,6 @@ export const runTool = async (
   const toolName = toolCall.function.name
   const toolArgs = JSON.parse(toolCall.function.arguments)
 
-  console.log(`\n⚙️  Executing tool: ${toolName}`)
-  console.log(`   Arguments: ${JSON.stringify(toolArgs, null, 2)}`)
 
   const startTime = Date.now()
 
@@ -26,7 +24,6 @@ export const runTool = async (
     const result = await toolFn(toolArgs)
     const duration = Date.now() - startTime
 
-    console.log(`   ✓ Completed in ${duration}ms`)
 
     return result
   } catch (error: any) {

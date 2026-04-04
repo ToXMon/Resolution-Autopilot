@@ -55,3 +55,6 @@ logs/
 
 # Vercel
 .vercel
+
+__pycache__
+target/

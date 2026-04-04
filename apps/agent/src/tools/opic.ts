@@ -78,10 +78,7 @@ export const logToOPIC: ToolFn<LogToOPICInput, string> = async (input) => {
     // Write back to file
     await fs.writeFile(OPIC_LOG_FILE, JSON.stringify(logs, null, 2))
 
-    console.log(`\n📊 [OPIC] Logged event: ${event_name}`)
-    console.log(`   Metrics: ${JSON.stringify(metrics)}`)
     if (reasoning_chain) {
-      console.log(`   Reasoning: ${reasoning_chain.substring(0, 100)}...`)
     }
 
   } catch (error) {

@@ -56,7 +56,6 @@ async function fetchGoogleCalendarEvents(userId: string, daysBack: number): Prom
     const clientSecret = process.env.GOOGLE_CALENDAR_CLIENT_SECRET
     
     if (!apiKey && !clientId) {
-      console.log('[Calendar] Google Calendar API not configured, using mock data')
       return []
     }
 

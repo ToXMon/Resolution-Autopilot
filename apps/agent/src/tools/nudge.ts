@@ -59,7 +59,6 @@ async function sendSMS(userId: string, message: string): Promise<{ success: bool
     const toNumber = process.env.TWILIO_TEST_TO_NUMBER // User's phone number (mock for now)
 
     if (!accountSid || !authToken || !fromNumber) {
-      console.log('[Nudge] Twilio not configured, simulating SMS')
       return { success: true, messageId: `sim-${uuidv4()}` }
     }
 
@@ -83,7 +82,6 @@ async function sendSMS(userId: string, message: string): Promise<{ success: bool
  */
 async function sendPushNotification(userId: string, message: string): Promise<{ success: boolean; messageId?: string }> {
   // TODO: Integrate with push notification service (Firebase, OneSignal, etc.)
-  console.log('[Nudge] Push notifications not implemented yet, simulating')
   return { success: true, messageId: `push-${uuidv4()}` }
 }
 
@@ -92,7 +90,6 @@ async function sendPushNotification(userId: string, message: string): Promise<{ 
  */
 async function sendEmail(userId: string, message: string): Promise<{ success: boolean; messageId?: string }> {
   // TODO: Integrate with email service (SendGrid, Mailgun, etc.)
-  console.log('[Nudge] Email not implemented yet, simulating')
   return { success: true, messageId: `email-${uuidv4()}` }
 }
 
@@ -101,10 +98,6 @@ export const sendNudge: ToolFn<SendNudgeInput, string> = async (input) => {
 
   const sent_at = new Date().toISOString()
 
-  console.log(`\n📱 [NUDGE - ${channel.toUpperCase()}] ${urgency.toUpperCase()} priority`)
-  console.log(`To: User ${user_id}`)
-  console.log(`Message: ${message}`)
-  console.log(`Sent at: ${sent_at}\n`)
 
   let sendResult: { success: boolean; messageId?: string; error?: string }
 

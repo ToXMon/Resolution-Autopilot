@@ -14,11 +14,6 @@ const main = async () => {
 
   if (!userMessage) {
     console.error('❌ Error: Please provide a message')
-    console.log('\nUsage: bun run index.ts "your message here"')
-    console.log('\nExample messages:')
-    console.log('  • "Am I at risk of quitting my gym resolution?"')
-    console.log('  • "I missed my workout today. What should I do?"')
-    console.log('  • "Just got home exhausted. Should I still go to the gym?"')
     process.exit(1)
   }
 
@@ -26,7 +21,6 @@ const main = async () => {
     // Run the agent
     await runAgent(userMessage)
 
-    console.log('\n✅ Agent session completed\n')
 
   } catch (error: any) {
     logError(error)

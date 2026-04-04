@@ -30,10 +30,6 @@ describe("CommitmentContract", function () {
       const ownerAddr = await contract.owner();
       const bonusPercentage = await contract.bonusPercentage();
 
-      console.log("✓ Contract deployed successfully");
-      console.log("  Charity address:", charityAddr);
-      console.log("  Owner address:", ownerAddr);
-      console.log("  Bonus percentage:", bonusPercentage.toString());
       
       if (charityAddr !== charity.address) throw new Error("Charity address mismatch");
       if (ownerAddr !== owner.address) throw new Error("Owner address mismatch");
@@ -55,11 +51,6 @@ describe("CommitmentContract", function () {
 
       const commitment = await contract.getCommitment(user.address);
       
-      console.log("✓ Commitment created successfully");
-      console.log("  User:", commitment.user);
-      console.log("  Stake amount:", ethers.formatEther(commitment.stakeAmount), "ETH");
-      console.log("  Total milestones:", commitment.totalMilestones.toString());
-      console.log("  Is active:", commitment.isActive);
 
       if (commitment.user !== user.address) throw new Error("User mismatch");
       if (commitment.stakeAmount !== STAKE_AMOUNT) throw new Error("Stake amount mismatch");
@@ -82,7 +73,6 @@ describe("CommitmentContract", function () {
         if (!error.message.includes("Stake amount must be greater than 0")) {
           throw error;
         }
-        console.log("✓ Correctly reverted for zero stake amount");
       }
     });
 
@@ -98,7 +88,6 @@ describe("CommitmentContract", function () {
 
       const milestones = await contract.getMilestones(user.address);
       
-      console.log("✓ Milestones initialized:", milestones.length);
       
       if (milestones.length !== TOTAL_MILESTONES) {
         throw new Error("Milestone count mismatch");
@@ -133,9 +122,6 @@ describe("CommitmentContract", function () {
       const milestones = await contract.getMilestones(user.address);
       const commitment = await contract.getCommitment(user.address);
 
-      console.log("✓ Milestone completed successfully");
-      console.log("  Proof hash:", milestones[0].proofHash);
-      console.log("  Completed milestones:", commitment.completedMilestones.toString());
 
       if (!milestones[0].isCompleted) throw new Error("Milestone should be completed");
       if (milestones[0].proofHash !== proofHash) throw new Error("Proof hash mismatch");
@@ -162,10 +148,6 @@ describe("CommitmentContract", function () {
       const commitment = await contract.getCommitment(user.address);
       const userBalanceAfter = await ethers.provider.getBalance(user.address);
 
-      console.log("✓ All milestones completed - commitment successful");
-      console.log("  Is active:", commitment.isActive);
-      console.log("  Is completed:", commitment.isCompleted);
-      console.log("  User received payout with 10% bonus");
 
       if (commitment.isActive) throw new Error("Commitment should not be active");
       if (!commitment.isCompleted) throw new Error("Commitment should be completed");
@@ -192,8 +174,6 @@ describe("CommitmentContract", function () {
       const commitment = await contract.getCommitment(user.address);
       const charityBalanceAfter = await ethers.provider.getBalance(charity.address);
 
-      console.log("✓ Commitment forfeited - sent to charity");
-      console.log("  Charity received:", ethers.formatEther(charityBalanceAfter - charityBalanceBefore), "ETH");
 
       if (commitment.isActive) throw new Error("Commitment should not be active");
       if (commitment.isCompleted) throw new Error("Commitment should not be completed");
@@ -210,8 +190,6 @@ describe("CommitmentContract", function () {
       await contract.connect(owner).setCharityAddress(addr1.address);
       const newCharity = await contract.charityAddress();
 
-      console.log("✓ Charity address updated successfully");
-      console.log("  New charity:", newCharity);
 
       if (newCharity !== addr1.address) throw new Error("Charity address update failed");
     });
@@ -222,8 +200,6 @@ describe("CommitmentContract", function () {
       await contract.connect(owner).setBonusPercentage(20);
       const newBonus = await contract.bonusPercentage();
 
-      console.log("✓ Bonus percentage updated successfully");
-      console.log("  New bonus:", newBonus.toString(), "%");
 
       if (newBonus !== BigInt(20)) throw new Error("Bonus percentage update failed");
     });

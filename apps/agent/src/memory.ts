@@ -161,7 +161,6 @@ export const initializeDemoData = async (): Promise<void> => {
   database.data.userProfiles.push(demoProfile)
   await database.write()
 
-  console.log('✅ Demo data initialized')
 }
 
 // Export database access functions for tools
